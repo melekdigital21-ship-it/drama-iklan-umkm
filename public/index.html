@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Generator Drama &amp; Iklan Video UMKM (10 Detik – 10 Menit)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+</head>
+<body class="bg-[#080c18] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-amber-950/35 via-[#0b1021] to-[#060913] text-slate-100 min-h-screen antialiased selection:bg-amber-500 selection:text-slate-950">
+  <!-- Toast Notifikasi -->
+  <div id="toastDrama" class="fixed bottom-5 right-5 z-50 hidden max-w-sm rounded-2xl border border-amber-400/40 bg-slate-900/95 px-4 py-3 text-xs font-semibold text-amber-100 shadow-2xl backdrop-blur"></div>
+
+  <div class="mx-auto max-w-6xl px-4 py-6 sm:py-8 space-y-6">
+    <!-- Header Mandiri -->
+    <header class="rounded-3xl border border-amber-400/25 bg-gradient-to-br from-slate-900/95 via-amber-950/30 to-indigo-950/50 p-5 sm:p-7 shadow-2xl backdrop-blur-sm">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div class="space-y-2 max-w-3xl">
+          <div class="inline-flex flex-wrap items-center gap-2 rounded-full border border-amber-400/35 bg-amber-500/15 px-3 py-1 text-[11px] font-extrabold uppercase tracking-wider text-amber-200">
+            <span>🎬 Drama Iklan UMKM</span>
+            <span>•</span>
+            <span>Durasi 10 Detik – 10 Menit</span>
+            <span>•</span>
+            <span>Naskah &amp; Prompt AI</span>
+          </div>
+          <h1 class="text-2xl sm:text-4xl font-black tracking-tight text-white">
+            Generator Drama &amp; Iklan Video UMKM
+          </h1>
+          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+            Susun cerita drama pendek berdurasi <strong class="text-amber-300">10 detik hingga 10 menit</strong> yang menyatu alami dengan produk UMKM Anda—lengkap dengan alur babak, dialog tokoh, arahan emosi &amp; kamera, serta <em>prompt</em> visual/video AI per adegan.
+          </p>
+        </div>
+
+        <!-- Status API Key -->
+        <button
+          type="button"
+          id="btnStatusApiDrama"
+          onclick="bukaModalApiDrama()"
+          class="self-start sm:self-center inline-flex items-center gap-2 rounded-2xl border border-amber-400/50 bg-slate-900/95 px-4 py-2.5 text-xs font-bold text-amber-200 hover:border-emerald-400/70 transition shrink-0"
+        >
+          <span id="dotApiDrama" class="h-2.5 w-2.5 rounded-full bg-amber-400"></span>
+          <span id="labelApiDrama">Atur API Key</span>
+          <span id="tandaAktifApiDrama" class="hidden rounded-full bg-emerald-400/20 border border-emerald-300/50 px-2 py-0.5 text-[10px] font-extrabold text-emerald-200">✓ AKTIF</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Konten Utama: Form Skenario (Kiri) & Hasil Naskah + Prompt (Kanan) -->
+    <main class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <!-- KOLOM KIRI: PENGATURAN DRAMA & DURASI -->
+      <section class="lg:col-span-5 rounded-3xl border border-slate-800 bg-slate-900/85 p-5 sm:p-6 shadow-xl space-y-4">
+        <div class="flex items-center justify-between gap-2">
+          <div>
+            <h2 class="text-base sm:text-lg font-extrabold text-white">1. Atur Cerita &amp; Durasi</h2>
+            <p class="text-[11px] text-slate-400">Pilih durasi bebas mulai 10 detik sampai 10 menit.</p>
+          </div>
+          <button
+            type="button"
+            onclick="resetFormDrama()"
+            class="rounded-xl border border-slate-700 bg-slate-950 hover:bg-slate-800 px-3 py-1.5 text-xs font-bold text-slate-300 transition"
+          >
+            Reset
+          </button>
+        </div>
+
+        <!-- Pengaturan Durasi Fleksibel: 10 Detik s/d 10 Menit (600 Detik) -->
+        <div class="rounded-2xl border border-amber-400/30 bg-slate-950/90 p-3.5 space-y-2.5">
+          <div class="flex items-center justify-between gap-2">
+            <label for="sliderDurasiDetik" class="text-xs font-extrabold text-amber-300">
+              Durasi Drama Iklan
+            </label>
+            <span id="labelDurasiAktif" class="rounded-full bg-amber-500/20 border border-amber-400/40 px-2.5 py-0.5 text-xs font-black text-amber-200">
+              5 Menit (300 dtk)
+            </span>
+          </div>
+
+          <input
+            id="sliderDurasiDetik"
+            type="range"
+            min="10"
+            max="600"
+            step="5"
+            value="300"
+            oninput="sinkronDurasiDariSlider()"
+            class="w-full accent-amber-400 cursor-pointer"
+          />
+
+          <div class="flex justify-between text-[10px] font-semibold text-slate-400">
+            <span>10 detik</span>
+            <span>1 menit</span>
+            <span>5 menit</span>
+            <span>10 menit</span>
+          </div>
+
+          <!-- Tombol Preset Cepat -->
+          <div class="grid grid-cols-3 sm:grid-cols-6 gap-1.5 pt-1">
+            <button type="button" id="preset-10" onclick="pilihPresetDurasi(10)" class="rounded-lg border border-slate-800 bg-slate-900 hover:border-amber-400/60 py-1.5 text-[11px] font-bold text-slate-200 transition">10 dtk</button>
+            <button type="button" id="preset-30" onclick="pilihPresetDurasi(30)" class="rounded-lg border border-slate-800 bg-slate-900 hover:border-amber-400/60 py-1.5 text-[11px] font-bold text-slate-200 transition">30 dtk</button>
+            <button type="button" id="preset-60" onclick="pilihPresetDurasi(60)" class="rounded-lg border border-slate-800 bg-slate-900 hover:border-amber-400/60 py-1.5 text-[11px] font-bold text-slate-200 transition">1 mnt</button>
+            <button type="button" id="preset-180" onclick="pilihPresetDurasi(180)" class="rounded-lg border border-slate-800 bg-slate-900 hover:border-amber-400/60 py-1.5 text-[11px] font-bold text-slate-200 transition">3 mnt</button>
+            <button type="button" id="preset-300" onclick="pilihPresetDurasi(300)" class="rounded-lg border border-amber-400 bg-amber-500/20 py-1.5 text-[11px] font-extrabold text-amber-200 transition">5 mnt</button>
+            <button type="button" id="preset-600" onclick="pilihPresetDurasi(600)" class="rounded-lg border border-slate-800 bg-slate-900 hover:border-amber-400/60 py-1.5 text-[11px] font-bold text-slate-200 transition">10 mnt</button>
+          </div>
+        </div>
+
+        <!-- Input Cerita & Produk UMKM -->
+        <div class="space-y-3">
+          <div>
+            <label for="dramaProduk" class="block text-xs font-bold text-amber-200 mb-1">
+              Produk / Brand UMKM
+            </label>
+            <input
+              id="dramaProduk"
+              type="text"
+              placeholder="Contoh: Kopi Susu Gula Aren Rumahan 'Kopi Rindu'"
+              class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-2.5 text-sm text-white placeholder:text-slate-500 focus:border-amber-400 outline-none"
+            />
+          </div>
+
+          <div>
+            <label for="dramaKonflik" class="block text-xs font-bold text-amber-200 mb-1">
+              Premis / Konflik Drama Singkat
+            </label>
+            <input
+              id="dramaKonflik"
+              type="text"
+              placeholder="Contoh: Kakak-adik lama tak pulang kampung, bertemu saat musim hujan"
+              class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-2.5 text-sm text-white placeholder:text-slate-500 focus:border-amber-400 outline-none"
+            />
+          </div>
+
+          <div>
+            <label for="dramaTokoh" class="block text-xs font-bold text-amber-200 mb-1">
+              Tokoh Utama &amp; Latar Tempat
+            </label>
+            <input
+              id="dramaTokoh"
+              type="text"
+              placeholder="Contoh: Raka (perantau), Tari (penjaga warung), di teras rumah sore hari"
+              class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-2.5 text-sm text-white placeholder:text-slate-500 focus:border-amber-400 outline-none"
+            />
+          </div>
+
+          <div>
+            <label for="dramaPesan" class="block text-xs font-bold text-amber-200 mb-1">
+              Keunggulan Produk &amp; Pesan Jualan
+            </label>
+            <input
+              id="dramaPesan"
+              type="text"
+              placeholder="Contoh: Gula aren asli, biji kopi sangrai segar, cocok teman santai &amp; oleh-oleh"
+              class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-2.5 text-sm text-white placeholder:text-slate-500 focus:border-amber-400 outline-none"
+            />
+          </div>
+        </div>
+
+        <!-- Nuansa Cerita -->
+        <div class="space-y-2">
+          <span class="block text-xs font-bold text-slate-300">Nuansa Drama</span>
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" id="genre-keluarga" onclick="pilihGenreDrama('keluarga')" class="rounded-xl border border-amber-400 bg-amber-600/30 px-3 py-2 text-xs font-bold text-amber-100 transition">🏡 Keluarga &amp; Rindu</button>
+            <button type="button" id="genre-komedi" onclick="pilihGenreDrama('komedi')" class="rounded-xl border border-slate-800 bg-slate-950 px-3 py-2 text-xs font-semibold text-slate-300 hover:border-slate-600 transition">😂 Komedi &amp; Plot Twist</button>
+            <button type="button" id="genre-perjuangan" onclick="pilihGenreDrama('perjuangan')" class="rounded-xl border border-slate-800 bg-slate-950 px-3 py-2 text-xs font-semibold text-slate-300 hover:border-slate-600 transition">🔥 Perjuangan &amp; Bangkit</button>
+            <button type="button" id="genre-romantis" onclick="pilihGenreDrama('romantis')" class="rounded-xl border border-slate-800 bg-slate-950 px-3 py-2 text-xs font-semibold text-slate-300 hover:border-slate-600 transition">☕ Hangat &amp; Romantis</button>
+          </div>
+        </div>
+
+        <!-- Gaya Penempatan Produk -->
+        <div class="space-y-2">
+          <span class="block text-xs font-bold text-slate-300">Cara Produk Muncul</span>
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" id="teknik-soft" onclick="pilihTeknikProduk('soft')" class="rounded-xl border border-emerald-400 bg-emerald-600/25 px-3 py-2 text-xs font-bold text-emerald-100 transition">🌿 Soft-Selling Alami</button>
+            <button type="button" id="teknik-solusi" onclick="pilihTeknikProduk('solusi')" class="rounded-xl border border-slate-800 bg-slate-950 px-3 py-2 text-xs font-semibold text-slate-300 hover:border-slate-600 transition">⚡ Penyelamat Momen</button>
+          </div>
+        </div>
+
+        <!-- Tombol Generate -->
+        <button
+          type="button"
+          id="btnGenerateDrama"
+          onclick="generateDramaIklan()"
+          class="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 hover:from-amber-400 hover:to-rose-400 px-5 py-3.5 text-sm font-black text-slate-950 shadow-xl transition disabled:opacity-60"
+        >
+          <span>🎬</span>
+          <span id="teksTombolDrama">Buat Naskah &amp; Prompt (5 Menit)</span>
+        </button>
+      </section>
+
+      <!-- KOLOM KANAN: HASIL NASKAH DRAMA & PROMPT AI -->
+      <section class="lg:col-span-7 rounded-3xl border border-slate-800 bg-slate-900/85 p-5 sm:p-6 shadow-xl space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
+          <div>
+            <h2 class="text-base sm:text-lg font-extrabold text-white">2. Naskah Drama &amp; Prompt Adegan AI</h2>
+            <p id="statusHasilDrama" class="text-[11px] text-slate-400">Belum ada naskah drama dibuat.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button
+              type="button"
+              onclick="salinNaskahDrama()"
+              class="rounded-xl border border-amber-400/40 bg-amber-500/15 hover:bg-amber-500/25 px-3.5 py-2 text-xs font-bold text-amber-200 transition"
+            >
+              📋 Salin Naskah
+            </button>
+            <button
+              type="button"
+              onclick="unduhNaskahTxt()"
+              class="rounded-xl border border-slate-700 bg-slate-950 hover:bg-slate-800 px-3.5 py-2 text-xs font-bold text-slate-200 transition"
+            >
+              ⬇️ Unduh .TXT
+            </button>
+          </div>
+        </div>
+
+        <div id="wadahHasilDrama" class="space-y-3 min-h-[380px] rounded-2xl border border-slate-800/90 bg-slate-950/80 p-4">
+          <div class="flex flex-col items-center justify-center h-80 text-center space-y-2 px-4">
+            <div class="text-3xl">🎭</div>
+            <p class="text-xs sm:text-sm font-semibold text-slate-300">
+              Atur durasi (mulai <span class="text-amber-300 font-bold">10 detik</span> hingga <span class="text-amber-300 font-bold">10 menit</span>) dan isi cerita produk di sebelah kiri.
+            </p>
+            <p class="text-[11px] text-slate-500 max-w-md">
+              Sistem akan menyusun pembagian babak sesuai durasi, dialog antar tokoh, arahan akting &amp; kamera, serta <em>prompt</em> visual/video AI yang siap disalin ke generator video.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- 3. STUDIO EDITOR & PENGGABUNG KLIP VIDEO UMKM -->
+    <section class="rounded-3xl border border-amber-400/25 bg-gradient-to-br from-slate-900/95 via-slate-900/90 to-indigo-950/50 p-5 sm:p-7 shadow-2xl space-y-5">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-800/90 pb-4">
+        <div>
+          <div class="inline-flex items-center gap-1.5 rounded-full border border-amber-400/35 bg-amber-500/15 px-3 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-amber-200">
+            🎞️ Studio Perakitan Video Langsung di Browser
+          </div>
+          <h2 class="text-lg sm:text-xl font-black text-white mt-1">
+            3. Gabungkan &amp; Edit Klip Video Iklan UMKM
+          </h2>
+          <p class="text-xs text-slate-300">
+            Satukan beberapa klip video adegan (hasil AI video maupun rekaman HP), atur urutan &amp; potongan durasinya, pilih transisi, tempel logo &amp; teks promo UMKM, lalu ekspor jadi satu video utuh.
+          </p>
+        </div>
+        <div class="flex flex-wrap items-center gap-2 shrink-0">
+          <label
+            for="inputKlipVideoUmkm"
+            class="cursor-pointer inline-flex items-center gap-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 px-4 py-2.5 text-xs font-black text-slate-950 shadow-lg transition"
+          >
+            <span>➕</span>
+            <span>Tambah Klip Video</span>
+          </label>
+          <input
+            id="inputKlipVideoUmkm"
+            type="file"
+            accept="video/*"
+            multiple
+            onchange="tambahKlipVideo(event)"
+            class="hidden"
+          />
+          <button
+            type="button"
+            onclick="bersihkanSemuaKlip()"
+            class="rounded-xl border border-slate-700 bg-slate-950 hover:bg-slate-800 px-3.5 py-2.5 text-xs font-bold text-slate-300 transition"
+          >
+            Hapus Semua
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <!-- Panel Kiri: Daftar Klip + Pengaturan Branding & Efek UMKM -->
+        <div class="lg:col-span-6 space-y-4">
+          <!-- Daftar Klip Adegan -->
+          <div class="rounded-2xl border border-slate-800 bg-slate-950/85 p-4 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-extrabold text-amber-200">Urutan &amp; Pemangkasan Klip Adegan</span>
+              <span id="infoTotalDurasiKlip" class="text-[11px] font-bold text-slate-400">0 klip • 0,0 dtk</span>
+            </div>
+
+            <div id="wadahDaftarKlipVideo" class="space-y-2.5 max-h-72 overflow-y-auto pr-1">
+              <div class="rounded-xl border border-dashed border-slate-800 bg-slate-900/60 p-5 text-center text-xs text-slate-400">
+                Belum ada klip video. Klik <strong class="text-amber-300">Tambah Klip Video</strong> untuk memasukkan 2 atau lebih adegan drama/iklan.
+              </div>
+            </div>
+          </div>
+
+          <!-- Pengaturan Format & Overlay Kebutuhan UMKM -->
+          <div class="rounded-2xl border border-slate-800 bg-slate-950/85 p-4 space-y-3">
+            <div class="text-xs font-extrabold text-indigo-300">Pengaturan Format &amp; Identitas UMKM</div>
+
+            <!-- Pilihan Rasio Layar -->
+            <div class="space-y-1.5">
+              <span class="block text-[11px] font-bold text-slate-300">Rasio Layar Platform</span>
+              <div class="grid grid-cols-3 gap-2">
+                <button type="button" id="rasio-9:16" onclick="pilihRasioVideo('9:16')" class="rounded-xl border border-amber-400 bg-amber-500/20 px-2.5 py-2 text-xs font-extrabold text-amber-200 transition">
+                  📱 9:16 Reels/TikTok
+                </button>
+                <button type="button" id="rasio-16:9" onclick="pilihRasioVideo('16:9')" class="rounded-xl border border-slate-800 bg-slate-900 px-2.5 py-2 text-xs font-semibold text-slate-300 hover:border-slate-600 transition">
+                  🖥️ 16:9 YouTube
+                </button>
+                <button type="button" id="rasio-1:1" onclick="pilihRasioVideo('1:1')" class="rounded-xl border border-slate-800 bg-slate-900 px-2.5 py-2 text-xs font-semibold text-slate-300 hover:border-slate-600 transition">
+                  ⬜ 1:1 Feed/WA
+                </button>
+              </div>
+            </div>
+
+            <!-- Teks Brand, Harga/Promo & CTA -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <div>
+                <label for="ovNamaBrand" class="block text-[11px] font-bold text-slate-300 mb-1">
+                  Watermark Nama Brand
+                </label>
+                <input
+                  id="ovNamaBrand"
+                  type="text"
+                  placeholder="Contoh: Kopi Rindu Limo"
+                  oninput="gambarFramePratinjau()"
+                  class="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-xs text-white placeholder:text-slate-500 focus:border-amber-400 outline-none"
+                />
+              </div>
+
+              <div>
+                <label for="ovBadgePromo" class="block text-[11px] font-bold text-slate-300 mb-1">
+                  Stiker Promo / Harga
+                </label>
+                <input
+                  id="ovBadgePromo"
+                  type="text"
+                  placeholder="Contoh: Promo Rp15rb • Beli 2 Gratis 1"
+                  oninput="gambarFramePratinjau()"
+                  class="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-xs text-white placeholder:text-slate-500 focus:border-amber-400 outline-none"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label for="ovTeksBawah" class="block text-[11px] font-bold text-slate-300 mb-1">
+                Banner Bawah / Ajakan Order (WA / Lokasi)
+              </label>
+              <input
+                id="ovTeksBawah"
+                type="text"
+                placeholder="Contoh: Order WA 0812-xxxx-xxxx • Siap Antar Kec. Limo"
+                oninput="gambarFramePratinjau()"
+                class="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-xs text-white placeholder:text-slate-500 focus:border-amber-400 outline-none"
+              />
+            </div>
+
+            <!-- Pilihan Filter Warna, Transisi, Logo & Audio Backsound -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+              <div>
+                <label for="ovFilterWarna" class="block text-[11px] font-bold text-slate-300 mb-1">
+                  Nuansa Warna (Color Grading)
+                </label>
+                <select
+                  id="ovFilterWarna"
+                  onchange="gambarFramePratinjau()"
+                  class="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-xs font-semibold text-white focus:border-amber-400 outline-none"
+                >
+                  <option value="none">Original (Natural Asli)</option>
+                  <option value="warm">Hangat Kekeluargaan (Warm Golden)</option>
+                  <option value="vivid">Cerah Menggugah Selera (Food Vivid)</option>
+                  <option value="cinema">Sinematik Drama (Kontras Film)</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="ovTransisiAdegan" class="block text-[11px] font-bold text-slate-300 mb-1">
+                  Transisi Antar Adegan
+                </label>
+                <select
+                  id="ovTransisiAdegan"
+                  class="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-xs font-semibold text-white focus:border-amber-400 outline-none"
+                >
+                  <option value="fade">Fade / Larut Lembut (Drama)</option>
+                  <option value="slide">Geser Halus (Modern)</option>
+                  <option value="cut">Potongan Cepat (Dinamis)</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-bold text-slate-300 mb-1">
+                  Logo Brand UMKM (Opsional)
+                </label>
+                <div class="flex items-center gap-2">
+                  <label
+                    for="inputLogoVideoUmkm"
+                    class="flex-1 cursor-pointer truncate rounded-xl border border-slate-700 bg-slate-900 hover:border-amber-400 px-3 py-2 text-xs font-semibold text-amber-200 transition"
+                  >
+                    🏷️ <span id="labelLogoVideoUmkm">Pilih Logo PNG/JPG...</span>
+                  </label>
+                  <input
+                    id="inputLogoVideoUmkm"
+                    type="file"
+                    accept="image/*"
+                    onchange="pilihLogoVideoUmkm(event)"
+                    class="hidden"
+                  />
+                  <button
+                    type="button"
+                    id="btnHapusLogoVideo"
+                    onclick="hapusLogoVideoUmkm()"
+                    class="hidden rounded-xl border border-rose-500/40 bg-rose-950/80 px-2.5 py-2 text-xs font-bold text-rose-200"
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-bold text-slate-300 mb-1">
+                  Musik Latar / Voiceover (Opsional)
+                </label>
+                <div class="flex items-center gap-2">
+                  <label
+                    for="inputAudioLatar"
+                    class="flex-1 cursor-pointer truncate rounded-xl border border-slate-700 bg-slate-900 hover:border-emerald-400 px-3 py-2 text-xs font-semibold text-emerald-200 transition"
+                  >
+                    🎵 <span id="labelAudioLatar">Pilih File MP3/WAV...</span>
+                  </label>
+                  <input
+                    id="inputAudioLatar"
+                    type="file"
+                    accept="audio/*"
+                    onchange="pilihAudioLatar(event)"
+                    class="hidden"
+                  />
+                  <button
+                    type="button"
+                    id="btnHapusAudioLatar"
+                    onclick="hapusAudioLatar()"
+                    class="hidden rounded-xl border border-rose-500/40 bg-rose-950/80 px-2.5 py-2 text-xs font-bold text-rose-200"
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel Kanan: Pratinjau Langsung, Gabung & Unduh Video Utuh -->
+        <div class="lg:col-span-6 rounded-2xl border border-slate-800 bg-slate-950/90 p-4 sm:p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-extrabold text-white">Pratinjau &amp; Ekspor Video Gabungan</span>
+            <span id="statusRenderVideo" class="text-[11px] font-semibold text-slate-400">Siap dirakit</span>
+          </div>
+
+          <!-- Kanvas Pratinjau -->
+          <div class="flex items-center justify-center rounded-2xl border border-slate-800 bg-[#050811] p-3 min-h-[280px]">
+            <canvas
+              id="kanvasEditorVideo"
+              width="540"
+              height="960"
+              class="max-h-[380px] w-auto rounded-xl border border-slate-700/80 shadow-2xl bg-black"
+            ></canvas>
+          </div>
+
+          <!-- Progress Bar Saat Menggabungkan -->
+          <div id="wadahProgressRender" class="hidden space-y-1.5">
+            <div class="flex justify-between text-[11px] font-bold text-amber-200">
+              <span id="teksProgressRender">Menggabungkan klip video...</span>
+              <span id="persenProgressRender">0%</span>
+            </div>
+            <div class="h-2.5 w-full overflow-hidden rounded-full bg-slate-800">
+              <div id="barProgressRender" class="h-full w-0 bg-gradient-to-r from-amber-400 via-orange-500 to-emerald-400 transition-all duration-150"></div>
+            </div>
+          </div>
+
+          <!-- Tombol Aksi Pratinjau & Gabung Video -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <button
+              type="button"
+              id="btnPratinjauGabungan"
+              onclick="togglePratinjauGabungan()"
+              class="inline-flex items-center justify-center gap-1.5 rounded-xl border border-indigo-400/50 bg-indigo-600/25 hover:bg-indigo-600/40 px-4 py-3 text-xs font-extrabold text-indigo-100 transition"
+            >
+              <span id="ikonPratinjau">▶️</span>
+              <span id="teksPratinjau">Putar Pratinjau Urutan</span>
+            </button>
+
+            <button
+              type="button"
+              id="btnGabungDanUnduh"
+              onclick="gabungkanDanUnduhVideo()"
+              class="inline-flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 px-4 py-3 text-xs font-black text-slate-950 shadow-lg transition disabled:opacity-60"
+            >
+              <span>🎬</span>
+              <span>Gabungkan &amp; Unduh Video</span>
+            </button>
+          </div>
+
+          <!-- Hasil Video Gabungan Siap Putar & Unduh -->
+          <div id="wadahHasilVideoGabungan" class="hidden rounded-2xl border border-emerald-400/35 bg-emerald-950/25 p-3.5 space-y-2.5">
+            <div class="text-xs font-extrabold text-emerald-300">✅ Video Iklan UMKM Berhasil Digabungkan!</div>
+            <video id="videoHasilGabungan" controls class="w-full max-h-64 rounded-xl bg-black border border-slate-800"></video>
+            <a
+              id="linkUnduhVideoGabungan"
+              href="#"
+              download="iklan-drama-umkm.webm"
+              class="inline-flex items-center justify-center gap-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 px-4 py-2 text-xs font-black text-slate-950 transition"
+            >
+              ⬇️ Unduh File Video Gabungan
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Modal Pengaturan API Key -->
+  <div id="modalApiDrama" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 p-4 backdrop-blur-sm">
+    <div class="w-full max-w-md rounded-3xl border border-slate-700 bg-slate-900 p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="text-base font-extrabold text-white">Pengaturan Gemini API Key</h3>
+        <button type="button" onclick="tutupModalApiDrama()" class="rounded-lg bg-slate-800 px-2.5 py-1 text-xs font-bold text-slate-300 hover:text-white">✕</button>
+      </div>
+      <p class="text-xs text-slate-300 leading-relaxed">
+        Tempelkan Gemini API Key Anda jika belum terpasang di server. Key disimpan secara lokal di browser Anda.
+      </p>
+      <input
+        id="inputApiKeyDrama"
+        type="password"
+        placeholder="AIzaSy..."
+        class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-xs font-mono text-white focus:border-amber-400 outline-none"
+      />
+      <div class="flex items-center justify-end gap-2">
+        <button type="button" onclick="hapusApiKeyDrama()" class="rounded-xl bg-slate-800 hover:bg-rose-600/80 px-4 py-2 text-xs font-bold text-slate-200 transition">
+          Hapus
+        </button>
+        <button type="button" onclick="simpanApiKeyDrama()" class="rounded-xl bg-amber-500 hover:bg-amber-400 px-4 py-2 text-xs font-black text-slate-950 transition">
+          Simpan
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let durasiDetik = 300; // Default 5 menit (rentang: 10 detik s/d 600 detik / 10 menit)
+    let genreTerpilih = 'keluarga';
+    let teknikTerpilih = 'soft';
+    let naskahDramaTerakhir = '';
+    let apiKeyDrama = '';
+    let serverSiapDrama = false;
+
+    try {
+      apiKeyDrama = localStorage.getItem('gemini_api_key_umkm') || '';
+    } catch (e) {}
+
+    function tampilkanToastDrama(pesan) {
+      const box = document.getElementById('toastDrama');
+      if (!box) return;
+      box.textContent = pesan;
+      box.classList.remove('hidden');
+      clearTimeout(window.__toastDramaTimer);
+      window.__toastDramaTimer = setTimeout(() => {
+        box.classList.add('hidden');
+      }, 3200);
+    }
+
+    function escapeHtmlDrama(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
+
+    function formatLabelDurasi(detik) {
+      const d = Math.max(10, Math.min(600, Number(detik) || 60));
+      if (d < 60) return `${d} Detik`;
+      const mnt = Math.floor(d / 60);
+      const sisa = d % 60;
+      return sisa === 0 ? `${mnt} Menit (${d} dtk)` : `${mnt} Menit ${sisa} dtk (${d} dtk)`;
+    }
+
+    function formatTimestamp(detik) {
+      const total = Math.max(0, Math.round(Number(detik) || 0));
+      const m = String(Math.floor(total / 60)).padStart(2, '0');
+      const s = String(total % 60).padStart(2, '0');
+      return `${m}:${s}`;
+    }
+
+    function perbaruiTampilanDurasi() {
+      const labelAktif = document.getElementById('labelDurasiAktif');
+      const teksTombol = document.getElementById('teksTombolDrama');
+      const labelSingkat = durasiDetik < 60
+        ? `${durasiDetik} Detik`
+        : `${Math.floor(durasiDetik / 60)}${durasiDetik % 60 ? `m ${durasiDetik % 60}d` : ' Menit'}`;
+
+      if (labelAktif) labelAktif.textContent = formatLabelDurasi(durasiDetik);
+      if (teksTombol) teksTombol.textContent = `Buat Naskah & Prompt (${labelSingkat})`;
+
+      [10, 30, 60, 180, 300, 600].forEach((p) => {
+        const btn = document.getElementById(`preset-${p}`);
+        if (!btn) return;
+        btn.className = p === durasiDetik
+          ? 'rounded-lg border border-amber-400 bg-amber-500/20 py-1.5 text-[11px] font-extrabold text-amber-200 transition'
+          : 'rounded-lg border border-slate-800 bg-slate-900 hover:border-amber-400/60 py-1.5 text-[11px] font-bold text-slate-200 transition';
+      });
+    }
+
+    function sinkronDurasiDariSlider() {
+      const slider = document.getElementById('sliderDurasiDetik');
+      durasiDetik = Math.max(10, Math.min(600, Number(slider?.value) || 60));
+      perbaruiTampilanDurasi();
+    }
+
+    function pilihPresetDurasi(detik) {
+      durasiDetik = Math.max(10, Math.min(600, Number(detik) || 60));
+      const slider = document.getElementById('sliderDurasiDetik');
+      if (slider) slider.value = String(durasiDetik);
+      perbaruiTampilanDurasi();
+    }
+
+    function pilihGenreDrama(genre) {
+      genreTerpilih = genre;
+      ['keluarga', 'komedi', 'perjuangan', 'romantis'].forEach((g) => {
+        const btn = document.getElementById(`genre-${g}`);
+        if (!btn) return;
+        btn.className = g === genre
+          ? 'rounded-xl border border-amber-400 bg-amber-600/30 px-3 py-2 text-xs font-bold text-amber-100 transition'
+          : 'rounded-xl border border-slate-800 bg-slate-950 px-3 py-2 text-xs font-semibold text-slate-300 hover:border-slate-600 transition';
+      });
+    }
+
+    function pilihTeknikProduk(teknik) {
+      teknikTerpilih = teknik;
+      ['soft', 'solusi'].forEach((t) => {
+        const btn = document.getElementById(`teknik-${t}`);
+        if (!btn) return;
+        btn.className = t === teknik
+          ? 'rounded-xl border border-emerald-400 bg-emerald-600/25 px-3 py-2 text-xs font-bold text-emerald-100 transition'
+          : 'rounded-xl border border-slate-800 bg-slate-950 px-3 py-2 text-xs font-semibold text-slate-300 hover:border-slate-600 transition';
+      });
+    }
+
+    function resetFormDrama() {
+      ['dramaProduk', 'dramaKonflik', 'dramaTokoh', 'dramaPesan'].forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+      pilihPresetDurasi(300);
+      pilihGenreDrama('keluarga');
+      pilihTeknikProduk('soft');
+      tampilkanToastDrama('Form drama direset.');
+    }
+
+    function perbaruiStatusApiDrama() {
+      const dot = document.getElementById('dotApiDrama');
+      const label = document.getElementById('labelApiDrama');
+      const tanda = document.getElementById('tandaAktifApiDrama');
+      const aktif = Boolean(apiKeyDrama.trim()) || serverSiapDrama;
+
+      if (dot && label) {
+        if (aktif) {
+          dot.className = 'h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse';
+          label.textContent = apiKeyDrama.trim() ? 'Gemini API Key' : 'Server Gemini API';
+          tanda?.classList.remove('hidden');
+        } else {
+          dot.className = 'h-2.5 w-2.5 rounded-full bg-amber-400';
+          label.textContent = 'Atur API Key';
+          tanda?.classList.add('hidden');
+        }
+      }
+    }
+
+    function bukaModalApiDrama() {
+      const modal = document.getElementById('modalApiDrama');
+      const input = document.getElementById('inputApiKeyDrama');
+      if (input) input.value = apiKeyDrama;
+      if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      }
+    }
+
+    function tutupModalApiDrama() {
+      const modal = document.getElementById('modalApiDrama');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+    }
+
+    function simpanApiKeyDrama() {
+      apiKeyDrama = (document.getElementById('inputApiKeyDrama')?.value || '').trim();
+      try {
+        localStorage.setItem('gemini_api_key_umkm', apiKeyDrama);
+      } catch (e) {}
+      perbaruiStatusApiDrama();
+      tutupModalApiDrama();
+      tampilkanToastDrama('API Key tersimpan.');
+    }
+
+    function hapusApiKeyDrama() {
+      apiKeyDrama = '';
+      try {
+        localStorage.removeItem('gemini_api_key_umkm');
+      } catch (e) {}
+      const input = document.getElementById('inputApiKeyDrama');
+      if (input) input.value = '';
+      perbaruiStatusApiDrama();
+      tampilkanToastDrama('API Key dihapus.');
+    }
+
+    function hitungStrukturBabak(totalDetik) {
+      if (totalDetik <= 20) {
+        return [
+          { nama: 'Hook & Momen Cepat', mulai: 0, akhir: Math.round(totalDetik * 0.45) },
+          { nama: 'Munculnya Produk & Ajakan', mulai: Math.round(totalDetik * 0.45), akhir: totalDetik },
+        ];
+      }
+      if (totalDetik <= 90) {
+        const s1 = Math.round(totalDetik * 0.3);
+        const s2 = Math.round(totalDetik * 0.72);
+        return [
+          { nama: 'Babak 1 — Pembuka & Konflik Singkat', mulai: 0, akhir: s1 },
+          { nama: 'Babak 2 — Hadirnya Produk & Momen Utama', mulai: s1, akhir: s2 },
+          { nama: 'Babak 3 — Resolusi & Ajakan Order', mulai: s2, akhir: totalDetik },
+        ];
+      }
+      const b1 = Math.round(totalDetik * 0.22);
+      const b2 = Math.round(totalDetik * 0.52);
+      const b3 = Math.round(totalDetik * 0.82);
+      return [
+        { nama: 'Babak 1 — Pembuka, Dunia Tokoh & Benih Konflik', mulai: 0, akhir: b1 },
+        { nama: 'Babak 2 — Pendalaman Emosi & Titik Tegang', mulai: b1, akhir: b2 },
+        { nama: 'Babak 3 — Kehadiran Produk & Perubahan Sikap', mulai: b2, akhir: b3 },
+        { nama: 'Babak 4 — Klimaks Hangat, Makna & Penutup Iklan', mulai: b3, akhir: totalDetik },
+      ];
+    }
+
+    function bangunPromptDramaPanjang(produk, konflik, tokoh, pesan, detik) {
+      const labelDurasi = formatLabelDurasi(detik);
+      const babakList = hitungStrukturBabak(detik)
+        .map((b, idx) => `- ${b.nama} (${formatTimestamp(b.mulai)} – ${formatTimestamp(b.akhir)})`)
+        .join('\n');
+
+      const genreMap = {
+        keluarga: 'Drama Keluarga & Rindu (hangat, menyentuh hati, membumi)',
+        komedi: 'Drama Komedi & Plot Twist Ringan (lucu, tak terduga, menghibur)',
+        perjuangan: 'Drama Perjuangan & Bangkit (inspiratif, emosional, penuh harapan)',
+        romantis: 'Drama Hangat & Romantis Slice-of-Life (manis, akrab, menenangkan)',
+      };
+
+      const teknikMap = {
+        soft: 'Soft-selling alami: produk menyatu dalam alur cerita dan emosi tokoh, tidak terkesan memaksa atau berjualan keras.',
+        solusi: 'Penyelamat momen: produk hadir pada saat krusial/emosional dan memberi dampak nyata bagi tokoh.',
+      };
+
+      return `Anda adalah penulis naskah drama pendek iklan UMKM dan prompt director AI video.
+Buatkan naskah drama iklan lengkap berdurasi TEPAT ${labelDurasi} untuk produk UMKM berikut:
+
+- Produk / Brand UMKM: ${produk}
+- Premis / Konflik Cerita: ${konflik || 'Cerita keseharian yang dekat dengan kehidupan masyarakat Indonesia'}
+- Tokoh & Latar Tempat: ${tokoh || 'Tokoh utama, keluarga/sahabat, dan suasana rumah/tempat usaha lokal'}
+- Keunggulan Produk & Pesan Jualan: ${pesan || 'Kualitas terbaik, terpercaya, dan menemani momen berharga'}
+- Genre / Nuansa: ${genreMap[genreTerpilih] || genreTerpilih}
+- Gaya Integrasi Produk: ${teknikMap[teknikTerpilih] || teknikTerpilih}
+
+Struktur Waktu Babak yang Wajib Diikuti:
+${babakList}
+
+Format Output Wajib (gunakan pemisah "### "):
+### 1. Konsep Cerita, Karakter & Garis Besar Drama (${labelDurasi})
+### 2. Naskah Babak per Babak (Timestamp, Aksi/Akting, Dialog & Kamera)
+### 3. Prompt Visual & Video AI per Adegan (Siap Copy-Paste ke Generator Video/Gambar)
+### 4. Panduan Musik Latar, Sound Effect & Penutup Iklan (CTA)
+
+Pastikan ritme dialog dan jumlah adegan sesuai dengan durasi ${labelDurasi}, berbahasa Indonesia yang hidup dan alami, serta menyertakan prompt AI yang detail dan konsisten.`;
+    }
+
+    function renderNaskahDramaTerstruktur(teksMentah) {
+      const wadah = document.getElementById('wadahHasilDrama');
+      if (!wadah) return;
+
+      const bagian = teksMentah.split(/\n(?=###\s)/g).filter((b) => b.trim());
+      if (bagian.length <= 1) {
+        wadah.innerHTML = `<div class="rounded-2xl border border-slate-800 bg-slate-900 p-4 text-xs sm:text-sm text-slate-100 whitespace-pre-wrap leading-relaxed">${escapeHtmlDrama(teksMentah)}</div>`;
+        return;
+      }
+
+      wadah.innerHTML = bagian.map((blok) => {
+        const baris = blok.trim().split('\n');
+        const judul = baris[0].replace(/^###\s*/, '').trim();
+        const isi = baris.slice(1).join('\n').trim();
+        return `
+          <article class="rounded-2xl border border-slate-800 bg-slate-900/95 p-4 space-y-2">
+            <h3 class="text-xs sm:text-sm font-extrabold text-amber-300">${escapeHtmlDrama(judul)}</h3>
+            <div class="text-xs sm:text-sm text-slate-200 whitespace-pre-wrap leading-relaxed">${escapeHtmlDrama(isi)}</div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function buatNaskahFallbackLokal(produk, pesan, tokoh) {
+      const labelDurasi = formatLabelDurasi(durasiDetik);
+      const pemeran = tokoh || 'Tokoh utama dan keluarga/sahabat terdekat';
+      const nilaiInti = pesan || 'kualitas terbaik untuk menemani keseharian';
+      const t1 = formatTimestamp(Math.round(durasiDetik * 0.25));
+      const t2 = formatTimestamp(Math.round(durasiDetik * 0.6));
+      const tEnd = formatTimestamp(durasiDetik);
+
+      return `### 1. Ringkasan Drama Iklan (${labelDurasi})
+- Judul: Hadir di Saat Tepat — Cerita ${produk}
+- Karakter & Latar: ${pemeran}
+- Pesan Utama: ${nilaiInti}
+
+### 2. Babak 1 — Pembuka & Situasi (${formatTimestamp(0)} – ${t1})
+- Suasana keseharian yang dekat dengan penonton, memunculkan rasa rindu atau kebutuhan nyata.
+- Dialog: "Rasanya ada yang kurang kalau hari ini belum sempat kumpul atau istirahat sebentar..."
+- [PROMPT AI ADEGAN 1]: Cinematic Indonesian slice-of-life drama scene, warm natural light, ${pemeran}, medium shot, film grain, 4k photorealistic.
+
+### 3. Babak 2 — Hadirnya Produk & Momen Emosional (${t1} – ${t2})
+- ${produk} hadir secara alami (${teknikTerpilih === 'soft' ? 'soft-selling hangat' : 'sebagai solusi utama'}) untuk menghadirkan ${nilaiInti}.
+- Dialog: "Coba deh rasakan ini—${nilaiInti}. Langsung terasa bedanya."
+- [PROMPT AI ADEGAN 2]: Close-up shot of Indonesian UMKM product "${produk}" on a cozy wooden table, warm golden hour lighting, shallow depth of field, cinematic commercial.
+
+### 4. Babak 3 — Penutup & Ajakan Beli (${t2} – ${tEnd})
+- Senyum hangat penuh kelegaan, diakhiri pesan ajakan mencoba atau memesan produk.
+- [PROMPT AI ADEGAN 3]: Heartwarming ending shot, smiling characters sharing moment together, soft bokeh background, cinematic commercial finish.`;
+    }
+
+    async function generateDramaIklan() {
+      const produk = (document.getElementById('dramaProduk')?.value || '').trim();
+      const konflik = (document.getElementById('dramaKonflik')?.value || '').trim();
+      const tokoh = (document.getElementById('dramaTokoh')?.value || '').trim();
+      const pesan = (document.getElementById('dramaPesan')?.value || '').trim();
+
+      if (!produk) {
+        tampilkanToastDrama('Isi minimal kolom "Produk / Brand UMKM" terlebih dahulu.');
+        document.getElementById('dramaProduk')?.focus();
+        return;
+      }
+
+      const btn = document.getElementById('btnGenerateDrama');
+      const status = document.getElementById('statusHasilDrama');
+      const labelDurasi = formatLabelDurasi(durasiDetik);
+
+      if (btn) btn.disabled = true;
+      if (status) status.textContent = `Menyusun naskah & prompt drama ${labelDurasi}...`;
+
+      const prompt = bangunPromptDramaPanjang(produk, konflik, tokoh, pesan, durasiDetik);
+
+      try {
+        let hasilTeks = '';
+
+        try {
+          const resServer = await fetch('/api/gemini', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ prompt, mode: 'text' }),
+          });
+          if (resServer.ok) {
+            serverSiapDrama = true;
+            perbaruiStatusApiDrama();
+            const dataServer = await resServer.json();
+            hasilTeks = (dataServer.text || dataServer.result || dataServer.output || '').trim();
+          }
+        } catch (e) {}
+
+        if (!hasilTeks) {
+          const key = apiKeyDrama.trim();
+          if (!key) {
+            throw new Error('Server belum merespons dan API Key belum diisi');
+          }
+          const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${encodeURIComponent(key)}`;
+          const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: prompt }] }],
+            }),
+          });
+          const data = await res.json();
+          if (!res.ok) {
+            throw new Error(data?.error?.message || 'Gagal memanggil Gemini API.');
+          }
+          hasilTeks = (data?.candidates?.[0]?.content?.parts?.[0]?.text || '').trim();
+        }
+
+        if (!hasilTeks) throw new Error('Respon kosong dari model AI.');
+
+        naskahDramaTerakhir = hasilTeks;
+        renderNaskahDramaTerstruktur(hasilTeks);
+        if (status) status.textContent = `Selesai! Naskah ${labelDurasi} untuk "${produk}" siap dipakai.`;
+        tampilkanToastDrama(`Skenario ${labelDurasi} & prompt AI berhasil dibuat!`);
+      } catch (err) {
+        // Fallback otomatis menyusun draf naskah & prompt lokal jika API belum aktif/terganggu
+        const naskahLokal = buatNaskahFallbackLokal(produk, pesan, tokoh);
+        naskahDramaTerakhir = naskahLokal;
+        renderNaskahDramaTerstruktur(naskahLokal);
+        if (status) status.textContent = `Draf lokal ${labelDurasi} siap pakai (${err.message}).`;
+        tampilkanToastDrama('Draf naskah & prompt lokal otomatis disiapkan!');
+      } finally {
+        if (btn) btn.disabled = false;
+        perbaruiTampilanDurasi();
+      }
+    }
+
+    function salinNaskahDrama() {
+      if (!naskahDramaTerakhir) {
+        tampilkanToastDrama('Belum ada naskah untuk disalin.');
+        return;
+      }
+      navigator.clipboard?.writeText(naskahDramaTerakhir).then(() => {
+        tampilkanToastDrama('Naskah drama & prompt AI berhasil disalin!');
+      }).catch(() => {
+        tampilkanToastDrama('Gagal menyalin otomatis.');
+      });
+    }
+
+    function unduhNaskahTxt() {
+      if (!naskahDramaTerakhir) {
+        tampilkanToastDrama('Belum ada naskah untuk diunduh.');
+        return;
+      }
+      const produk = (document.getElementById('dramaProduk')?.value || 'drama-iklan-umkm')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '');
+      const blob = new Blob([naskahDramaTerakhir], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${produk || 'drama-iklan-umkm'}-${durasiDetik}s.txt`;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      tampilkanToastDrama('File naskah .TXT diunduh.');
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      perbaruiStatusApiDrama();
+      perbaruiTampilanDurasi();
+      gambarFramePratinjau();
+    });
+
+    // =========================================================================
+    // LOGIKA STUDIO EDITOR & PENGGABUNG KLIP VIDEO UMKM
+    // =========================================================================
+    let daftarKlipVideo = [];
+    let rasioVideoAktif = '9:16';
+    let audioLatarUrl = '';
+    let logoVideoDataUrl = '';
+    let logoVideoImgEl = null;
+    let sedangRenderVideo = false;
+    let sedangPratinjau = false;
+    let stopPlaybackFlag = false;
+
+    const DIMENSI_RASIO = {
+      '9:16': { width: 540, height: 960 },
+      '16:9': { width: 960, height: 540 },
+      '1:1': { width: 720, height: 720 },
+    };
+
+    function pilihRasioVideo(rasio) {
+      if (!DIMENSI_RASIO[rasio]) return;
+      rasioVideoAktif = rasio;
+
+      ['9:16', '16:9', '1:1'].forEach((r) => {
+        const btn = document.getElementById(`rasio-${r}`);
+        if (!btn) return;
+        btn.className = r === rasio
+          ? 'rounded-xl border border-amber-400 bg-amber-500/20 px-2.5 py-2 text-xs font-extrabold text-amber-200 transition'
+          : 'rounded-xl border border-slate-800 bg-slate-900 px-2.5 py-2 text-xs font-semibold text-slate-300 hover:border-slate-600 transition';
+      });
+
+      const canvas = document.getElementById('kanvasEditorVideo');
+      if (canvas) {
+        canvas.width = DIMENSI_RASIO[rasio].width;
+        canvas.height = DIMENSI_RASIO[rasio].height;
+      }
+      gambarFramePratinjau();
+    }
+
+    function pilihAudioLatar(event) {
+      const file = event?.target?.files?.[0];
+      if (!file) return;
+      if (audioLatarUrl) URL.revokeObjectURL(audioLatarUrl);
+      audioLatarUrl = URL.createObjectURL(file);
+      document.getElementById('labelAudioLatar').textContent = file.name;
+      document.getElementById('btnHapusAudioLatar')?.classList.remove('hidden');
+      tampilkanToastDrama('Musik latar / audio siap digabungkan ke video!');
+    }
+
+    function hapusAudioLatar() {
+      if (audioLatarUrl) URL.revokeObjectURL(audioLatarUrl);
+      audioLatarUrl = '';
+      const input = document.getElementById('inputAudioLatar');
+      if (input) input.value = '';
+      document.getElementById('labelAudioLatar').textContent = 'Pilih File MP3/WAV...';
+      document.getElementById('btnHapusAudioLatar')?.classList.add('hidden');
+      tampilkanToastDrama('Musik latar dihapus.');
+    }
+
+    function pilihLogoVideoUmkm(event) {
+      const file = event?.target?.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        logoVideoDataUrl = String(e?.target?.result || '');
+        const img = new Image();
+        img.onload = () => {
+          logoVideoImgEl = img;
+          gambarFramePratinjau();
+        };
+        img.src = logoVideoDataUrl;
+        document.getElementById('labelLogoVideoUmkm').textContent = file.name;
+        document.getElementById('btnHapusLogoVideo')?.classList.remove('hidden');
+        tampilkanToastDrama('Logo brand UMKM siap dipasang ke video!');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function hapusLogoVideoUmkm() {
+      logoVideoDataUrl = '';
+      logoVideoImgEl = null;
+      const input = document.getElementById('inputLogoVideoUmkm');
+      if (input) input.value = '';
+      document.getElementById('labelLogoVideoUmkm').textContent = 'Pilih Logo PNG/JPG...';
+      document.getElementById('btnHapusLogoVideo')?.classList.add('hidden');
+      gambarFramePratinjau();
+      tampilkanToastDrama('Logo video dihapus.');
+    }
+
+    async function tambahKlipVideo(event) {
+      const files = Array.from(event?.target?.files || []);
+      if (!files.length) return;
+
+      for (const file of files) {
+        const url = URL.createObjectURL(file);
+        const durasiAsli = await muatDurasiVideo(url);
+        daftarKlipVideo.push({
+          id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+          nama: file.name,
+          url,
+          durasiAsli,
+          mulaiDetik: 0,
+          akhirDetik: Number(durasiAsli.toFixed(1)),
+          teksAdegan: '',
+        });
+      }
+
+      event.target.value = '';
+      renderDaftarKlipVideo();
+      gambarFramePratinjau();
+      tampilkanToastDrama(`${files.length} klip video ditambahkan ke timeline!`);
+    }
+
+    function muatDurasiVideo(url) {
+      return new Promise((resolve) => {
+        const tempVid = document.createElement('video');
+        tempVid.preload = 'metadata';
+        tempVid.src = url;
+        tempVid.onloadedmetadata = () => {
+          const d = Number.isFinite(tempVid.duration) && tempVid.duration > 0 ? tempVid.duration : 5;
+          resolve(d);
+        };
+        tempVid.onerror = () => resolve(5);
+      });
+    }
+
+    function bersihkanSemuaKlip() {
+      stopPlaybackFlag = true;
+      daftarKlipVideo.forEach((k) => {
+        try { URL.revokeObjectURL(k.url); } catch (e) {}
+      });
+      daftarKlipVideo = [];
+      renderDaftarKlipVideo();
+      gambarFramePratinjau();
+      tampilkanToastDrama('Semua klip video dihapus.');
+    }
+
+    function geserKlip(index, arah) {
+      const targetIdx = index + arah;
+      if (targetIdx < 0 || targetIdx >= daftarKlipVideo.length) return;
+      const salinan = [...daftarKlipVideo];
+      const [item] = salinan.splice(index, 1);
+      salinan.splice(targetIdx, 0, item);
+      daftarKlipVideo = salinan;
+      renderDaftarKlipVideo();
+      gambarFramePratinjau();
+    }
+
+    function hapusKlip(index) {
+      const klip = daftarKlipVideo[index];
+      if (klip?.url) {
+        try { URL.revokeObjectURL(klip.url); } catch (e) {}
+      }
+      daftarKlipVideo.splice(index, 1);
+      renderDaftarKlipVideo();
+      gambarFramePratinjau();
+    }
+
+    function perbaruiPotonganKlip(index, field, nilai) {
+      const klip = daftarKlipVideo[index];
+      if (!klip) return;
+      const angka = Math.max(0, Math.min(klip.durasiAsli, Number(nilai) || 0));
+      if (field === 'mulai') {
+        klip.mulaiDetik = Math.min(angka, Math.max(0, klip.akhirDetik - 0.5));
+      } else if (field === 'akhir') {
+        klip.akhirDetik = Math.max(angka, Math.min(klip.durasiAsli, klip.mulaiDetik + 0.5));
+      } else if (field === 'teks') {
+        klip.teksAdegan = String(nilai || '');
+      }
+      perbaruiRingkasanDurasiKlip();
+      gambarFramePratinjau();
+    }
+
+    function perbaruiRingkasanDurasiKlip() {
+      const info = document.getElementById('infoTotalDurasiKlip');
+      if (!info) return;
+      const total = daftarKlipVideo.reduce((acc, k) => acc + Math.max(0.5, k.akhirDetik - k.mulaiDetik), 0);
+      info.textContent = `${daftarKlipVideo.length} klip • ${total.toFixed(1)} dtk`;
+    }
+
+    function renderDaftarKlipVideo() {
+      const wadah = document.getElementById('wadahDaftarKlipVideo');
+      if (!wadah) return;
+
+      if (!daftarKlipVideo.length) {
+        wadah.innerHTML = `
+          <div class="rounded-xl border border-dashed border-slate-800 bg-slate-900/60 p-5 text-center text-xs text-slate-400">
+            Belum ada klip video. Klik <strong class="text-amber-300">Tambah Klip Video</strong> untuk memasukkan 2 atau lebih adegan drama/iklan.
+          </div>
+        `;
+        perbaruiRingkasanDurasiKlip();
+        return;
+      }
+
+      wadah.innerHTML = daftarKlipVideo.map((klip, idx) => `
+        <div class="rounded-xl border border-slate-800 bg-slate-900/95 p-3 space-y-2">
+          <div class="flex items-center justify-between gap-2">
+            <div class="min-w-0">
+              <span class="inline-block rounded-md bg-amber-500/20 px-1.5 py-0.5 text-[10px] font-black text-amber-300 mr-1.5">KLIP ${idx + 1}</span>
+              <span class="text-xs font-bold text-white truncate">${escapeHtmlDrama(klip.nama)}</span>
+            </div>
+            <div class="flex items-center gap-1 shrink-0">
+              <button type="button" onclick="geserKlip(${idx}, -1)" ${idx === 0 ? 'disabled' : ''} class="rounded-lg bg-slate-800 hover:bg-slate-700 disabled:opacity-35 px-2 py-1 text-[11px] font-bold">↑</button>
+              <button type="button" onclick="geserKlip(${idx}, 1)" ${idx === daftarKlipVideo.length - 1 ? 'disabled' : ''} class="rounded-lg bg-slate-800 hover:bg-slate-700 disabled:opacity-35 px-2 py-1 text-[11px] font-bold">↓</button>
+              <button type="button" onclick="hapusKlip(${idx})" class="rounded-lg bg-rose-950/80 hover:bg-rose-900 border border-rose-500/40 px-2 py-1 text-[11px] font-bold text-rose-200">✕</button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <label class="flex items-center justify-between gap-1 rounded-lg bg-slate-950 px-2.5 py-1.5 border border-slate-800">
+              <span class="text-slate-400">Mulai (dtk)</span>
+              <input type="number" step="0.5" min="0" max="${klip.durasiAsli}" value="${klip.mulaiDetik}" onchange="perbaruiPotonganKlip(${idx}, 'mulai', this.value)" class="w-16 bg-transparent text-right font-bold text-amber-300 outline-none" />
+            </label>
+            <label class="flex items-center justify-between gap-1 rounded-lg bg-slate-950 px-2.5 py-1.5 border border-slate-800">
+              <span class="text-slate-400">Selesai (dtk)</span>
+              <input type="number" step="0.5" min="0.5" max="${klip.durasiAsli}" value="${klip.akhirDetik}" onchange="perbaruiPotonganKlip(${idx}, 'akhir', this.value)" class="w-16 bg-transparent text-right font-bold text-emerald-300 outline-none" />
+            </label>
+          </div>
+
+          <input
+            type="text"
+            placeholder="Teks dialog / caption khusus adegan ini (opsional)"
+            value="${escapeHtmlDrama(klip.teksAdegan)}"
+            oninput="perbaruiPotonganKlip(${idx}, 'teks', this.value)"
+            class="w-full rounded-lg border border-slate-800 bg-slate-950 px-2.5 py-1.5 text-[11px] text-slate-200 placeholder:text-slate-500 focus:border-amber-400 outline-none"
+          />
+        </div>
+      `).join('');
+
+      perbaruiRingkasanDurasiKlip();
+    }
+
+    function ambilCssFilterWarna() {
+      const mode = document.getElementById('ovFilterWarna')?.value || 'none';
+      if (mode === 'warm') return 'saturate(1.25) contrast(1.06) sepia(0.18)';
+      if (mode === 'vivid') return 'saturate(1.42) contrast(1.1) brightness(1.04)';
+      if (mode === 'cinema') return 'contrast(1.18) saturate(0.92) brightness(0.96)';
+      return 'none';
+    }
+
+    function gambarOverlayUmkmKeKanvas(ctx, w, h, videoEl = null, teksAdegan = '', efekProgress = 1, jenisEfek = 'none') {
+      ctx.save();
+      ctx.fillStyle = '#070a14';
+      ctx.fillRect(0, 0, w, h);
+
+      if (videoEl && videoEl.readyState >= 2) {
+        ctx.save();
+        ctx.filter = ambilCssFilterWarna();
+        if (jenisEfek === 'fade') {
+          ctx.globalAlpha = Math.max(0.15, Math.min(1, efekProgress));
+        } else if (jenisEfek === 'slide') {
+          const offsetGeser = (1 - Math.max(0, Math.min(1, efekProgress))) * w * 0.35;
+          ctx.translate(offsetGeser, 0);
+        }
+        const vw = videoEl.videoWidth || w;
+        const vh = videoEl.videoHeight || h;
+        const scale = Math.max(w / vw, h / vh);
+        const dw = vw * scale;
+        const dh = vh * scale;
+        const dx = (w - dw) / 2;
+        const dy = (h - dh) / 2;
+        ctx.drawImage(videoEl, dx, dy, dw, dh);
+        ctx.restore();
+      } else {
+        const grad = ctx.createLinearGradient(0, 0, w, h);
+        grad.addColorStop(0, '#0f172a');
+        grad.addColorStop(0.5, '#1e1b4b');
+        grad.addColorStop(1, '#31102f');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, w, h);
+
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = `700 ${Math.round(w * 0.032)}px Inter, sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.fillText('Pratinjau Layar Editor UMKM', w / 2, h / 2 - 8);
+        ctx.font = `500 ${Math.round(w * 0.024)}px Inter, sans-serif`;
+        ctx.fillText('Unggah klip video di sebelah kiri untuk mulai', w / 2, h / 2 + 22);
+        ctx.textAlign = 'left';
+      }
+
+      const brand = (document.getElementById('ovNamaBrand')?.value || '').trim();
+      const promo = (document.getElementById('ovBadgePromo')?.value || '').trim();
+      const bawah = (document.getElementById('ovTeksBawah')?.value || '').trim();
+      const pad = Math.round(w * 0.045);
+
+      // Logo gambar UMKM jika diunggah
+      if (logoVideoImgEl) {
+        const logoSize = Math.round(Math.min(w, h) * 0.11);
+        ctx.save();
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.92)';
+        ctx.beginPath();
+        ctx.roundRect(w - pad - logoSize, pad, logoSize, logoSize, 14);
+        ctx.fill();
+        ctx.drawImage(logoVideoImgEl, w - pad - logoSize + 4, pad + 4, logoSize - 8, logoSize - 8);
+        ctx.restore();
+      }
+
+      // 1. Watermark Nama Brand (Kiri Atas)
+      if (brand) {
+        const fontBrand = Math.max(16, Math.round(w * 0.032));
+        ctx.font = `800 ${fontBrand}px Inter, sans-serif`;
+        const teksW = Math.min(w - pad * 2, ctx.measureText(brand).width + 28);
+        const boxH = fontBrand + 16;
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.72)';
+        ctx.beginPath();
+        ctx.roundRect(pad, pad, teksW, boxH, 12);
+        ctx.fill();
+        ctx.fillStyle = '#fde68a';
+        ctx.fillText(brand, pad + 14, pad + fontBrand + 2);
+      }
+
+      // 2. Stiker Promo / Harga (Kanan Atas atau Bawah Logo)
+      if (promo) {
+        const fontPromo = Math.max(15, Math.round(w * 0.029));
+        ctx.font = `900 ${fontPromo}px Inter, sans-serif`;
+        const pW = Math.min(w - pad * 2, ctx.measureText(promo).width + 28);
+        const pH = fontPromo + 16;
+        const logoOffset = logoVideoImgEl ? Math.round(Math.min(w, h) * 0.11) + 10 : 0;
+        const px = w - pad - pW;
+        const py = pad + logoOffset;
+        ctx.fillStyle = '#f59e0b';
+        ctx.beginPath();
+        ctx.roundRect(px, py, pW, pH, 12);
+        ctx.fill();
+        ctx.fillStyle = '#090d1a';
+        ctx.fillText(promo, px + 14, py + fontPromo + 2);
+      }
+
+      // 3. Teks Dialog / Caption Adegan
+      if (teksAdegan) {
+        const fontSub = Math.max(16, Math.round(w * 0.032));
+        ctx.font = `700 ${fontSub}px Inter, sans-serif`;
+        ctx.textAlign = 'center';
+        const subY = bawah ? h - pad - Math.round(h * 0.12) : h - pad - 18;
+        ctx.fillStyle = 'rgba(2, 6, 23, 0.78)';
+        ctx.beginPath();
+        ctx.roundRect(pad, subY - fontSub - 8, w - pad * 2, fontSub + 20, 12);
+        ctx.fill();
+        ctx.fillStyle = '#ffffff';
+        ctx.fillText(teksAdegan.slice(0, 68), w / 2, subY + 4);
+        ctx.textAlign = 'left';
+      }
+
+      // 4. Banner Bawah Ajakan Order UMKM
+      if (bawah) {
+        const fontBawah = Math.max(15, Math.round(w * 0.03));
+        const bannerH = fontBawah + 22;
+        const by = h - pad - bannerH;
+        ctx.fillStyle = 'rgba(16, 185, 129, 0.92)';
+        ctx.beginPath();
+        ctx.roundRect(pad, by, w - pad * 2, bannerH, 14);
+        ctx.fill();
+        ctx.font = `800 ${fontBawah}px Inter, sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.fillStyle = '#04130e';
+        ctx.fillText(bawah.slice(0, 64), w / 2, by + fontBawah + 5);
+        ctx.textAlign = 'left';
+      }
+
+      ctx.restore();
+    }
+
+    function gambarFramePratinjau() {
+      const canvas = document.getElementById('kanvasEditorVideo');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const klipPertama = daftarKlipVideo[0];
+      gambarOverlayUmkmKeKanvas(ctx, canvas.width, canvas.height, null, klipPertama?.teksAdegan || '', 1, 'none');
+    }
+
+    async function jalankanUrutanKlip(modeRekam = false) {
+      if (!daftarKlipVideo.length) {
+        tampilkanToastDrama('Tambahkan minimal 1 klip video terlebih dahulu.');
+        return null;
+      }
+
+      const canvas = document.getElementById('kanvasEditorVideo');
+      const ctx = canvas.getContext('2d');
+      const totalDurasi = daftarKlipVideo.reduce((acc, k) => acc + Math.max(0.5, k.akhirDetik - k.mulaiDetik), 0);
+
+      let mediaRecorder = null;
+      const potonganRekaman = [];
+      let audioCtx = null;
+      let audioEl = null;
+
+      if (modeRekam) {
+        if (typeof MediaRecorder === 'undefined' || !canvas.captureStream) {
+          tampilkanToastDrama('Browser Anda tidak mendukung perekaman video langsung.');
+          return null;
+        }
+        const stream = canvas.captureStream(30);
+
+        if (audioLatarUrl) {
+          try {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const dest = audioCtx.createMediaStreamDestination();
+            audioEl = new Audio(audioLatarUrl);
+            audioEl.loop = true;
+            const srcNode = audioCtx.createMediaElementSource(audioEl);
+            srcNode.connect(dest);
+            srcNode.connect(audioCtx.destination);
+            dest.stream.getAudioTracks().forEach((track) => stream.addTrack(track));
+            await audioEl.play().catch(() => {});
+          } catch (e) {}
+        }
+
+        const mimeCandidates = ['video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm'];
+        const mimeType = mimeCandidates.find((m) => MediaRecorder.isTypeSupported(m)) || '';
+        mediaRecorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
+        mediaRecorder.ondataavailable = (ev) => {
+          if (ev.data && ev.data.size > 0) potonganRekaman.push(ev.data);
+        };
+        mediaRecorder.start(200);
+      }
+
+      const wadahProg = document.getElementById('wadahProgressRender');
+      const progBar = document.getElementById('barProgressRender');
+      const progPersen = document.getElementById('persenProgressRender');
+      const progTeks = document.getElementById('teksProgressRender');
+      if (modeRekam && wadahProg) wadahProg.classList.remove('hidden');
+
+      let detikTerlewati = 0;
+
+      for (let i = 0; i < daftarKlipVideo.length; i++) {
+        if (stopPlaybackFlag) break;
+        const klip = daftarKlipVideo[i];
+        if (progTeks) progTeks.textContent = `Memproses Klip ${i + 1} dari ${daftarKlipVideo.length}: ${klip.nama}`;
+
+        await new Promise((resolve) => {
+          const v = document.createElement('video');
+          v.src = klip.url;
+          v.muted = true;
+          v.playsInline = true;
+
+          const mulaiPutar = () => {
+            v.currentTime = Math.min(klip.mulaiDetik, Math.max(0, klip.durasiAsli - 0.1));
+          };
+
+          v.onseeked = () => {
+            v.play().catch(() => resolve());
+
+            const loopFrame = () => {
+              if (stopPlaybackFlag || v.paused || v.ended || v.currentTime >= klip.akhirDetik) {
+                v.pause();
+                detikTerlewati += Math.max(0.5, klip.akhirDetik - klip.mulaiDetik);
+                resolve();
+                return;
+              }
+
+              const durKlip = Math.max(0.5, klip.akhirDetik - klip.mulaiDetik);
+              const elapsedKlip = Math.max(0, v.currentTime - klip.mulaiDetik);
+              const jenisTransisi = document.getElementById('ovTransisiAdegan')?.value || 'fade';
+              const efekProg = jenisTransisi === 'cut' ? 1 : Math.min(1, elapsedKlip / Math.min(0.6, durKlip * 0.35));
+
+              gambarOverlayUmkmKeKanvas(ctx, canvas.width, canvas.height, v, klip.teksAdegan, efekProg, jenisTransisi);
+
+              if (modeRekam && progBar && progPersen && progTeks) {
+                const posisi = Math.min(totalDurasi, detikTerlewati + Math.max(0, v.currentTime - klip.mulaiDetik));
+                const persen = Math.min(100, Math.round((posisi / Math.max(0.5, totalDurasi)) * 100));
+                progBar.style.width = `${persen}%`;
+                progPersen.textContent = `${persen}%`;
+              }
+
+              requestAnimationFrame(loopFrame);
+            };
+
+            requestAnimationFrame(loopFrame);
+          };
+
+          v.onerror = () => resolve();
+          v.onloadedmetadata = mulaiPutar;
+          if (v.readyState >= 1) mulaiPutar();
+        });
+      }
+
+      if (audioEl) {
+        try { audioEl.pause(); } catch (e) {}
+      }
+      if (audioCtx) {
+        try { audioCtx.close(); } catch (e) {}
+      }
+
+      if (modeRekam && mediaRecorder) {
+        return await new Promise((resolve) => {
+          mediaRecorder.onstop = () => {
+            const blob = new Blob(potonganRekaman, { type: 'video/webm' });
+            resolve(blob);
+          };
+          mediaRecorder.stop();
+        });
+      }
+
+      return null;
+    }
+
+    async function togglePratinjauGabungan() {
+      if (sedangRenderVideo) return;
+      if (sedangPratinjau) {
+        stopPlaybackFlag = true;
+        sedangPratinjau = false;
+        document.getElementById('ikonPratinjau').textContent = '▶️';
+        document.getElementById('teksPratinjau').textContent = 'Putar Pratinjau Urutan';
+        return;
+      }
+
+      sedangPratinjau = true;
+      stopPlaybackFlag = false;
+      document.getElementById('ikonPratinjau').textContent = '⏹️';
+      document.getElementById('teksPratinjau').textContent = 'Hentikan Pratinjau';
+      document.getElementById('statusRenderVideo').textContent = 'Memutar pratinjau...';
+
+      await jalankanUrutanKlip(false);
+
+      sedangPratinjau = false;
+      stopPlaybackFlag = false;
+      document.getElementById('ikonPratinjau').textContent = '▶️';
+      document.getElementById('teksPratinjau').textContent = 'Putar Pratinjau Urutan';
+      document.getElementById('statusRenderVideo').textContent = 'Siap dirakit';
+      gambarFramePratinjau();
+    }
+
+    async function gabungkanDanUnduhVideo() {
+      if (sedangRenderVideo || sedangPratinjau) return;
+      if (!daftarKlipVideo.length) {
+        tampilkanToastDrama('Tambahkan minimal 1 klip video terlebih dahulu.');
+        return;
+      }
+
+      sedangRenderVideo = true;
+      stopPlaybackFlag = false;
+      const btn = document.getElementById('btnGabungDanUnduh');
+      const status = document.getElementById('statusRenderVideo');
+      if (btn) btn.disabled = true;
+      if (status) status.textContent = 'Sedang menggabungkan video...';
+
+      try {
+        const blob = await jalankanUrutanKlip(true);
+        if (blob && blob.size > 0) {
+          const urlVideo = URL.createObjectURL(blob);
+          const wadahHasil = document.getElementById('wadahHasilVideoGabungan');
+          const vidHasil = document.getElementById('videoHasilGabungan');
+          const linkUnduh = document.getElementById('linkUnduhVideoGabungan');
+
+          if (vidHasil) vidHasil.src = urlVideo;
+          if (linkUnduh) {
+            linkUnduh.href = urlVideo;
+            linkUnduh.download = `drama-iklan-umkm-${rasioVideoAktif.replace(':', 'x')}.webm`;
+          }
+          wadahHasil?.classList.remove('hidden');
+          if (status) status.textContent = 'Selesai digabungkan!';
+          tampilkanToastDrama('Video gabungan siap diputar & diunduh!');
+        }
+      } catch (err) {
+        tampilkanToastDrama(`Gagal menggabungkan video: ${err.message}`);
+      } finally {
+        sedangRenderVideo = false;
+        if (btn) btn.disabled = false;
+        gambarFramePratinjau();
+      }
+    }
+  </script>
+</body>
+</html>
