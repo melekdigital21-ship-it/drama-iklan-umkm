@@ -1329,7 +1329,30 @@ Pastikan ritme dialog dan jumlah adegan sesuai dengan durasi ${labelDurasi}, ber
       let mediaRecorder = null;
       const potonganRekaman = [];
       let audioCtx = null;
+      let destStream = null;
       let audioEl = null;
+
+      try {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') {
+          await audioCtx.resume();
+        }
+        destStream = audioCtx.createMediaStreamDestination();
+      } catch (e) {}
+
+      if (audioLatarUrl && audioCtx && destStream) {
+        try {
+          audioEl = new Audio(audioLatarUrl);
+          audioEl.loop = true;
+          const srcNode = audioCtx.createMediaElementSource(audioEl);
+          const bgGain = audioCtx.createGain();
+          bgGain.gain.value = 0.35; // Volume musik latar lembut agar dialog klip tetap jelas
+          srcNode.connect(bgGain);
+          bgGain.connect(destStream);
+          bgGain.connect(audioCtx.destination);
+          await audioEl.play().catch(() => {});
+        } catch (e) {}
+      }
 
       if (modeRekam) {
         if (typeof MediaRecorder === 'undefined' || !canvas.captureStream) {
@@ -1338,21 +1361,11 @@ Pastikan ritme dialog dan jumlah adegan sesuai dengan durasi ${labelDurasi}, ber
         }
         const stream = canvas.captureStream(30);
 
-        if (audioLatarUrl) {
-          try {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            const dest = audioCtx.createMediaStreamDestination();
-            audioEl = new Audio(audioLatarUrl);
-            audioEl.loop = true;
-            const srcNode = audioCtx.createMediaElementSource(audioEl);
-            srcNode.connect(dest);
-            srcNode.connect(audioCtx.destination);
-            dest.stream.getAudioTracks().forEach((track) => stream.addTrack(track));
-            await audioEl.play().catch(() => {});
-          } catch (e) {}
+        if (destStream) {
+          destStream.stream.getAudioTracks().forEach((track) => stream.addTrack(track));
         }
 
-        const mimeCandidates = ['video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm'];
+        const mimeCandidates = ['video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm'];
         const mimeType = mimeCandidates.find((m) => MediaRecorder.isTypeSupported(m)) || '';
         mediaRecorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
         mediaRecorder.ondataavailable = (ev) => {
@@ -1377,8 +1390,18 @@ Pastikan ritme dialog dan jumlah adegan sesuai dengan durasi ${labelDurasi}, ber
         await new Promise((resolve) => {
           const v = document.createElement('video');
           v.src = klip.url;
-          v.muted = true;
+          v.muted = false;
+          v.volume = 1.0;
           v.playsInline = true;
+
+          // Hubungkan jalur audio asli dari klip video ke AudioContext & perekam
+          if (audioCtx && destStream) {
+            try {
+              const clipAudioSource = audioCtx.createMediaElementSource(v);
+              clipAudioSource.connect(destStream);
+              clipAudioSource.connect(audioCtx.destination);
+            } catch (e) {}
+          }
 
           const mulaiPutar = () => {
             v.currentTime = Math.min(klip.mulaiDetik, Math.max(0, klip.durasiAsli - 0.1));
