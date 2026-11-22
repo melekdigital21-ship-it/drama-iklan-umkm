@@ -71,6 +71,9 @@
     </div>
   </header>
 
+  <!-- Toast Notification -->
+  <div id="toastNotification" class="fixed bottom-5 right-5 z-50 hidden max-w-sm rounded-xl border border-amber-400/40 bg-zinc-900/95 px-4 py-3 text-xs font-semibold text-amber-100 shadow-2xl backdrop-blur"></div>
+
   <!-- Main Workspace -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
 
@@ -464,6 +467,17 @@
 
     let currentGeneratedData = null;
 
+    function showToast(message) {
+      const toast = document.getElementById('toastNotification');
+      if (!toast) return;
+      toast.textContent = message;
+      toast.classList.remove('hidden');
+      clearTimeout(window.__umkmToastTimer);
+      window.__umkmToastTimer = setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 3200);
+    }
+
     function updateDurationDisplay() {
       const idx = parseInt(document.getElementById('durationSlider').value, 10);
       const item = DURATION_STEPS[idx] || DURATION_STEPS[2];
@@ -751,7 +765,7 @@ Pastikan setiap adegan memiliki pembagian waktu yang pas hingga total ${durObj.s
       const txt = formatFullScriptText();
       if (!txt) return;
       navigator.clipboard.writeText(txt);
-      alert('Seluruh naskah drama & prompt video AI berhasil disalin!');
+      showToast('Seluruh naskah drama & prompt video AI berhasil disalin!');
     }
 
     function downloadScriptTxt() {
@@ -777,9 +791,11 @@ Pastikan setiap adegan memiliki pembagian waktu yang pas hingga total ${durObj.s
     let activeMediaRecorder = null;
     let activeRafId = null;
 
-    function updateCanvasAspect() {
-      const ratio = document.getElementById('aspectRatioSelect').value;
+    window.updateCanvasAspect = function updateCanvasAspect() {
+      const ratioEl = document.getElementById('aspectRatioSelect');
       const canvas = document.getElementById('videoEditorCanvas');
+      if (!ratioEl || !canvas) return;
+      const ratio = ratioEl.value;
       if (ratio === '9:16') {
         canvas.width = 540;
         canvas.height = 960;
@@ -791,9 +807,9 @@ Pastikan setiap adegan memiliki pembagian waktu yang pas hingga total ${durObj.s
         canvas.height = 720;
       }
       renderSinglePreviewFrame();
-    }
+    };
 
-    async function handleVideoUpload(event) {
+    window.handleVideoUpload = async function handleVideoUpload(event) {
       const files = Array.from(event.target.files || []);
       if (!files.length) return;
 
@@ -815,7 +831,7 @@ Pastikan setiap adegan memiliki pembagian waktu yang pas hingga total ${durObj.s
       event.target.value = '';
       renderClipList();
       renderSinglePreviewFrame();
-    }
+    };
 
     function extractVideoMetadata(url) {
       return new Promise((resolve) => {
@@ -892,13 +908,13 @@ Pastikan setiap adegan memiliki pembagian waktu yang pas hingga total ${durObj.s
       });
     }
 
-    function updateClipField(index, field, value) {
+    window.updateClipField = function updateClipField(index, field, value) {
       if (!uploadedClips[index]) return;
       uploadedClips[index][field] = value;
       renderSinglePreviewFrame();
-    }
+    };
 
-    function moveClip(index, dir) {
+    window.moveClip = function moveClip(index, dir) {
       const target = index + dir;
       if (target < 0 || target >= uploadedClips.length) return;
       const temp = uploadedClips[index];
@@ -906,21 +922,21 @@ Pastikan setiap adegan memiliki pembagian waktu yang pas hingga total ${durObj.s
       uploadedClips[target] = temp;
       renderClipList();
       renderSinglePreviewFrame();
-    }
+    };
 
-    function removeClip(index) {
+    window.removeClip = function removeClip(index) {
       uploadedClips.splice(index, 1);
       renderClipList();
       renderSinglePreviewFrame();
-    }
+    };
 
-    function clearAllClips() {
+    window.clearAllClips = function clearAllClips() {
       uploadedClips = [];
       renderClipList();
       renderSinglePreviewFrame();
-    }
+    };
 
-    function handleLogoUpload(event) {
+    window.handleLogoUpload = function handleLogoUpload(event) {
       const file = event.target.files?.[0];
       if (!file) return;
       const img = new Image();
@@ -930,16 +946,16 @@ Pastikan setiap adegan memiliki pembagian waktu yang pas hingga total ${durObj.s
         renderSinglePreviewFrame();
       };
       img.src = URL.createObjectURL(file);
-    }
+    };
 
-    function clearLogo() {
+    window.clearLogo = function clearLogo() {
       logoImageObj = null;
       document.getElementById('logoUploadInput').value = '';
       document.getElementById('clearLogoBtn').classList.add('hidden');
       renderSinglePreviewFrame();
-    }
+    };
 
-    function handleProductImgUpload(event) {
+    window.handleProductImgUpload = function handleProductImgUpload(event) {
       const file = event.target.files?.[0];
       if (!file) return;
       const img = new Image();
@@ -949,20 +965,20 @@ Pastikan setiap adegan memiliki pembagian waktu yang pas hingga total ${durObj.s
         renderSinglePreviewFrame();
       };
       img.src = URL.createObjectURL(file);
-    }
+    };
 
-    function clearProductImg() {
+    window.clearProductImg = function clearProductImg() {
       productImageObj = null;
       document.getElementById('productImgUploadInput').value = '';
       document.getElementById('clearProductImgBtn').classList.add('hidden');
       renderSinglePreviewFrame();
-    }
+    };
 
-    function handleBgmUpload(event) {
+    window.handleBgmUpload = function handleBgmUpload(event) {
       const file = event.target.files?.[0];
       if (!file) return;
       bgmAudioUrl = URL.createObjectURL(file);
-    }
+    };
 
     // Helper for rounded rectangle
     function drawRoundRect(ctx, x, y, width, height, radius) {
@@ -995,51 +1011,51 @@ Pastikan setiap adegan memiliki pembagian waktu yang pas hingga total ${durObj.s
       ctx.restore();
     }
 
-    // Elegant Animated UMKM Overlays (Auto-fitted backgrounds + Motion)
+    // Elegant Animated UMKM Overlays (Compact Commercial Standard + Motion)
     function drawUmkmOverlays(ctx, cw, ch, subtitleText = '', elapsedSec = 0) {
       const brandText = document.getElementById('brandWatermarkInput').value.trim();
       const promoText = document.getElementById('promoBadgeInput').value.trim();
       const ctaText = document.getElementById('ctaBannerInput').value.trim();
 
       const scaleFactor = cw / 540;
-      const margin = Math.round(22 * scaleFactor);
+      const margin = Math.round(14 * scaleFactor);
 
-      // Gentle floating oscillation (melayang di udara)
-      const floatY = Math.sin(elapsedSec * 2.4) * (6 * scaleFactor);
-      const floatTilt = Math.sin(elapsedSec * 1.8) * 0.025;
+      // Gentle floating oscillation (melayang perlahan di udara)
+      const floatY = Math.sin(elapsedSec * 2.2) * (4 * scaleFactor);
+      const floatTilt = Math.sin(elapsedSec * 1.6) * 0.018;
 
-      // 1. NAMA PRODUK & LOGO PRODUK (Bergoyang & melayang di udara, latar otomatis pas panjang teks)
+      // 1. NAMA PRODUK & LOGO PRODUK (Ukuran standar ringkas, melayang di udara, latar pas teks)
+      let brandBottomY = margin;
       if (brandText || logoImageObj) {
         ctx.save();
-        const fontSize = Math.round(16 * scaleFactor);
-        ctx.font = `800 ${fontSize}px "Plus Jakarta Sans", sans-serif`;
+        const fontSize = Math.round(11.5 * scaleFactor);
+        ctx.font = `700 ${fontSize}px "Plus Jakarta Sans", sans-serif`;
 
-        const logoSize = logoImageObj ? Math.round(36 * scaleFactor) : 0;
-        const gap = (logoImageObj && brandText) ? Math.round(10 * scaleFactor) : 0;
+        const logoSize = logoImageObj ? Math.round(22 * scaleFactor) : 0;
+        const gap = (logoImageObj && brandText) ? Math.round(6 * scaleFactor) : 0;
         const textWidth = brandText ? ctx.measureText(brandText).width : 0;
-        const padX = Math.round(16 * scaleFactor);
-        const padY = Math.round(10 * scaleFactor);
+        const padX = Math.round(10 * scaleFactor);
+        const padY = Math.round(5 * scaleFactor);
 
         const contentW = logoSize + gap + textWidth;
-        const pillW = Math.min(cw - margin * 2, contentW + padX * 2);
+        const pillW = Math.min(cw * 0.52, contentW + padX * 2);
         const pillH = Math.max(logoSize + padY, fontSize + padY * 2);
 
         const boxX = margin;
         const boxY = margin + floatY;
+        brandBottomY = margin + pillH;
 
-        // Subtle floating rotation around badge center
         ctx.translate(boxX + pillW / 2, boxY + pillH / 2);
         ctx.rotate(floatTilt);
         ctx.translate(-(boxX + pillW / 2), -(boxY + pillH / 2));
 
-        // Elegant dark-gold glassmorphic background sized strictly to content
         const grad = ctx.createLinearGradient(boxX, boxY, boxX + pillW, boxY + pillH);
-        grad.addColorStop(0, 'rgba(15, 23, 42, 0.86)');
-        grad.addColorStop(1, 'rgba(39, 39, 42, 0.88)');
+        grad.addColorStop(0, 'rgba(15, 23, 42, 0.78)');
+        grad.addColorStop(1, 'rgba(39, 39, 42, 0.82)');
 
-        ctx.shadowColor = 'rgba(0, 0, 0, 0.45)';
-        ctx.shadowBlur = 14 * scaleFactor;
-        ctx.shadowOffsetY = 5 * scaleFactor;
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.35)';
+        ctx.shadowBlur = 8 * scaleFactor;
+        ctx.shadowOffsetY = 3 * scaleFactor;
 
         drawRoundRect(ctx, boxX, boxY, pillW, pillH, pillH / 2);
         ctx.fillStyle = grad;
@@ -1047,8 +1063,8 @@ Pastikan setiap adegan memiliki pembagian waktu yang pas hingga total ${durObj.s
 
         ctx.shadowBlur = 0;
         ctx.shadowOffsetY = 0;
-        ctx.lineWidth = 1.5 * scaleFactor;
-        ctx.strokeStyle = 'rgba(251, 191, 36, 0.65)';
+        ctx.lineWidth = 1 * scaleFactor;
+        ctx.strokeStyle = 'rgba(251, 191, 36, 0.55)';
         ctx.stroke();
 
         let cursorX = boxX + padX;
@@ -1070,73 +1086,26 @@ Pastikan setiap adegan memiliki pembagian waktu yang pas hingga total ${durObj.s
         ctx.restore();
       }
 
-      // 2. GAMBAR / FOTO PRODUK (Melayang elegan di sisi kanan atas/tengah)
-      if (productImageObj) {
-        ctx.save();
-        const prodFloatY = Math.cos(elapsedSec * 2.1) * (8 * scaleFactor);
-        const maxProdDim = Math.round(126 * scaleFactor);
-        const aspect = (productImageObj.naturalWidth || 1) / (productImageObj.naturalHeight || 1);
-        let pw = maxProdDim;
-        let ph = maxProdDim;
-        if (aspect > 1) {
-          ph = maxProdDim / aspect;
-        } else {
-          pw = maxProdDim * aspect;
-        }
-
-        const framePad = Math.round(6 * scaleFactor);
-        const boxW = pw + framePad * 2;
-        const boxH = ph + framePad * 2;
-        const px = cw - margin - boxW;
-        const py = margin + Math.round(58 * scaleFactor) + prodFloatY;
-
-        ctx.translate(px + boxW / 2, py + boxH / 2);
-        ctx.rotate(-floatTilt * 1.15);
-        ctx.translate(-(px + boxW / 2), -(py + boxH / 2));
-
-        ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
-        ctx.shadowBlur = 16 * scaleFactor;
-        ctx.shadowOffsetY = 6 * scaleFactor;
-
-        drawRoundRect(ctx, px, py, boxW, boxH, 16 * scaleFactor);
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.92)';
-        ctx.fill();
-
-        ctx.shadowBlur = 0;
-        ctx.shadowOffsetY = 0;
-        ctx.lineWidth = 2 * scaleFactor;
-        ctx.strokeStyle = 'rgba(245, 158, 11, 0.85)';
-        ctx.stroke();
-
-        ctx.save();
-        drawRoundRect(ctx, px + framePad, py + framePad, pw, ph, 12 * scaleFactor);
-        ctx.clip();
-        ctx.drawImage(productImageObj, px + framePad, py + framePad, pw, ph);
-        ctx.restore();
-
-        ctx.restore();
-      }
-
-      // 3. TEKS HARGA / PROMO (Kedip perlahan elegan & area latar otomatis menyesuaikan teks)
+      // 2. TEKS HARGA / PROMO (Ukuran ringkas standar iklan, kedip perlahan, latar pas teks)
+      let priceBottomY = margin;
       if (promoText) {
         ctx.save();
-        // Smooth slow pulse (opacity 0.52 <-> 1.0 + gentle scale breathing)
-        const pulseWave = (Math.sin(elapsedSec * 3.0) + 1) / 2; // 0..1
-        const pulseAlpha = 0.52 + pulseWave * 0.48;
-        const pulseScale = 0.97 + pulseWave * 0.05;
+        const pulseWave = (Math.sin(elapsedSec * 2.6) + 1) / 2; // Kedip halus perlahan
+        const pulseAlpha = 0.45 + pulseWave * 0.55;
+        const pulseScale = 0.97 + pulseWave * 0.04;
 
-        const fontSize = Math.round(16 * scaleFactor);
+        const fontSize = Math.round(11.5 * scaleFactor);
         ctx.font = `800 ${fontSize}px "Plus Jakarta Sans", sans-serif`;
 
-        const padX = Math.round(18 * scaleFactor);
-        const padY = Math.round(9 * scaleFactor);
+        const padX = Math.round(11 * scaleFactor);
+        const padY = Math.round(5 * scaleFactor);
         const rawTextW = ctx.measureText(promoText).width;
-        const badgeW = Math.min(cw - margin * 2, rawTextW + padX * 2);
+        const badgeW = Math.min(cw * 0.44, rawTextW + padX * 2);
         const badgeH = fontSize + padY * 2;
 
-        // Place neatly at top-right (or below brand badge on narrow frames)
         const bx = cw - margin - badgeW;
         const by = margin;
+        priceBottomY = by + badgeH;
 
         ctx.globalAlpha = pulseAlpha;
         ctx.translate(bx + badgeW / 2, by + badgeH / 2);
@@ -1144,13 +1113,12 @@ Pastikan setiap adegan memiliki pembagian waktu yang pas hingga total ${durObj.s
         ctx.translate(-(bx + badgeW / 2), -(by + badgeH / 2));
 
         const priceGrad = ctx.createLinearGradient(bx, by, bx + badgeW, by + badgeH);
-        priceGrad.addColorStop(0, '#e11d48');
-        priceGrad.addColorStop(0.5, '#f97316');
-        priceGrad.addColorStop(1, '#d97706');
+        priceGrad.addColorStop(0, 'rgba(225, 29, 72, 0.92)');
+        priceGrad.addColorStop(1, 'rgba(234, 88, 12, 0.92)');
 
-        ctx.shadowColor = 'rgba(249, 115, 22, 0.55)';
-        ctx.shadowBlur = 16 * scaleFactor;
-        ctx.shadowOffsetY = 4 * scaleFactor;
+        ctx.shadowColor = 'rgba(249, 115, 22, 0.4)';
+        ctx.shadowBlur = 8 * scaleFactor;
+        ctx.shadowOffsetY = 3 * scaleFactor;
 
         drawRoundRect(ctx, bx, by, badgeW, badgeH, badgeH / 2);
         ctx.fillStyle = priceGrad;
@@ -1158,8 +1126,8 @@ Pastikan setiap adegan memiliki pembagian waktu yang pas hingga total ${durObj.s
 
         ctx.shadowBlur = 0;
         ctx.shadowOffsetY = 0;
-        ctx.lineWidth = 1.5 * scaleFactor;
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.75)';
+        ctx.lineWidth = 1 * scaleFactor;
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.65)';
         ctx.stroke();
 
         ctx.fillStyle = '#ffffff';
@@ -1169,76 +1137,106 @@ Pastikan setiap adegan memiliki pembagian waktu yang pas hingga total ${durObj.s
         ctx.restore();
       }
 
-      // 4. NOMOR TELEPON / WHATSAPP (Teks berjalan / Running Text dalam bar elegan sesuai area)
-      const bottomBarHeight = ctaText ? Math.round(42 * scaleFactor) : 0;
-      if (ctaText) {
+      // 3. GAMBAR / FOTO PRODUK (Ukuran thumbnail produk ringkas melayang di pojok kanan atas)
+      if (productImageObj) {
         ctx.save();
-        const fontSize = Math.round(15 * scaleFactor);
-        ctx.font = `700 ${fontSize}px "Plus Jakarta Sans", sans-serif`;
+        const prodFloatY = Math.cos(elapsedSec * 2.0) * (5 * scaleFactor);
+        const maxProdDim = Math.round(68 * scaleFactor);
+        const aspect = (productImageObj.naturalWidth || 1) / (productImageObj.naturalHeight || 1);
+        let pw = maxProdDim;
+        let ph = maxProdDim;
+        if (aspect > 1) {
+          ph = maxProdDim / aspect;
+        } else {
+          pw = maxProdDim * aspect;
+        }
 
-        const padX = Math.round(18 * scaleFactor);
-        const measuredW = ctx.measureText(ctaText).width;
-        const maxBarW = cw - margin * 2;
-        // Area latar menyesuaikan teks jika pendek, dan menjadi capsule elegan penuh jika panjang
-        const barW = Math.min(maxBarW, Math.max(measuredW + padX * 2, Math.round(240 * scaleFactor)));
-        const barX = (cw - barW) / 2;
-        const barY = ch - margin - bottomBarHeight;
+        const framePad = Math.round(3.5 * scaleFactor);
+        const boxW = pw + framePad * 2;
+        const boxH = ph + framePad * 2;
+        const px = cw - margin - boxW;
+        const py = Math.max(priceBottomY, margin) + Math.round(8 * scaleFactor) + prodFloatY;
 
-        const ctaGrad = ctx.createLinearGradient(barX, barY, barX + barW, barY);
-        ctaGrad.addColorStop(0, 'rgba(9, 9, 11, 0.90)');
-        ctaGrad.addColorStop(0.5, 'rgba(24, 24, 27, 0.94)');
-        ctaGrad.addColorStop(1, 'rgba(9, 9, 11, 0.90)');
+        ctx.translate(px + boxW / 2, py + boxH / 2);
+        ctx.rotate(-floatTilt * 1.1);
+        ctx.translate(-(px + boxW / 2), -(py + boxH / 2));
 
-        ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
-        ctx.shadowBlur = 12 * scaleFactor;
-        drawRoundRect(ctx, barX, barY, barW, bottomBarHeight, bottomBarHeight / 2);
-        ctx.fillStyle = ctaGrad;
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
+        ctx.shadowBlur = 10 * scaleFactor;
+        ctx.shadowOffsetY = 4 * scaleFactor;
+
+        drawRoundRect(ctx, px, py, boxW, boxH, 10 * scaleFactor);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
         ctx.fill();
 
         ctx.shadowBlur = 0;
-        ctx.lineWidth = 1.5 * scaleFactor;
-        ctx.strokeStyle = 'rgba(251, 191, 36, 0.75)';
+        ctx.shadowOffsetY = 0;
+        ctx.lineWidth = 1.2 * scaleFactor;
+        ctx.strokeStyle = 'rgba(245, 158, 11, 0.75)';
         ctx.stroke();
 
-        // Clip inside the pill so running text glides smoothly inside the box
         ctx.save();
-        drawRoundRect(ctx, barX + 6 * scaleFactor, barY, barW - 12 * scaleFactor, bottomBarHeight, bottomBarHeight / 2);
+        drawRoundRect(ctx, px + framePad, py + framePad, pw, ph, 7 * scaleFactor);
         ctx.clip();
-
-        const speedPxPerSec = 95 * scaleFactor;
-        const gapBetweenRepeats = Math.round(70 * scaleFactor);
-        const cycleLen = measuredW + gapBetweenRepeats;
-        const shift = (elapsedSec * speedPxPerSec) % cycleLen;
-
-        ctx.fillStyle = '#fde68a';
-        ctx.textAlign = 'left';
-        ctx.textBaseline = 'middle';
-
-        let drawX = barX + barW - shift;
-        while (drawX > barX - cycleLen) {
-          ctx.fillText(ctaText, drawX, barY + bottomBarHeight / 2);
-          drawX -= cycleLen;
-        }
+        ctx.drawImage(productImageObj, px + framePad, py + framePad, pw, ph);
         ctx.restore();
+
         ctx.restore();
       }
 
-      // 5. TEKS DIALOG ADEGAN (Auto-fitted background pill di atas bar telepon)
-      if (subtitleText) {
+      // 4. NOMOR TELEPON / WHATSAPP (Teks berjalan lambat TANPA warna latar & berjalan sepanjang layar)
+      const tickerHeight = ctaText ? Math.round(24 * scaleFactor) : 0;
+      if (ctaText) {
         ctx.save();
-        const fontSize = Math.round(17 * scaleFactor);
+        const fontSize = Math.round(12 * scaleFactor);
         ctx.font = `700 ${fontSize}px "Plus Jakarta Sans", sans-serif`;
 
-        const padX = Math.round(20 * scaleFactor);
-        const padY = Math.round(10 * scaleFactor);
+        const measuredW = ctx.measureText(ctaText).width;
+        const yPos = ch - Math.round(14 * scaleFactor);
+
+        // Kecepatan lambat sepanjang lebar layar (dari kanan ke kiri)
+        const speedPxPerSec = 42 * scaleFactor;
+        const gapBetweenRepeats = Math.round(90 * scaleFactor);
+        const cycleLen = Math.max(cw, measuredW) + gapBetweenRepeats;
+        const shift = (elapsedSec * speedPxPerSec) % cycleLen;
+
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+
+        // Outline gelap tipis + drop shadow agar terbaca jelas tanpa kotak latar
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.92)';
+        ctx.shadowBlur = 6 * scaleFactor;
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 1.5 * scaleFactor;
+        ctx.lineWidth = 2.8 * scaleFactor;
+        ctx.strokeStyle = 'rgba(0, 0, 0, 0.85)';
+        ctx.fillStyle = '#fde68a';
+
+        let drawX = cw - shift;
+        while (drawX > -cycleLen) {
+          ctx.strokeText(ctaText, drawX, yPos);
+          ctx.fillText(ctaText, drawX, yPos);
+          drawX -= cycleLen;
+        }
+        ctx.restore();
+      }
+
+      // 5. TEKS DIALOG ADEGAN (Ringkas & proporsional di atas teks berjalan)
+      if (subtitleText) {
+        ctx.save();
+        const fontSize = Math.round(12.5 * scaleFactor);
+        ctx.font = `700 ${fontSize}px "Plus Jakarta Sans", sans-serif`;
+
+        const padX = Math.round(12 * scaleFactor);
+        const padY = Math.round(6 * scaleFactor);
         const rawW = ctx.measureText(subtitleText).width;
         const pillW = Math.min(cw - margin * 2, rawW + padX * 2);
         const pillH = fontSize + padY * 2;
         const pillX = (cw - pillW) / 2;
-        const pillY = ch - margin - bottomBarHeight - (ctaText ? Math.round(12 * scaleFactor) : 0) - pillH;
+        const pillY = ch - margin - tickerHeight - (ctaText ? Math.round(6 * scaleFactor) : 0) - pillH;
 
-        drawRoundRect(ctx, pillX, pillY, pillW, pillH, 14 * scaleFactor);
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.72)';
+        drawRoundRect(ctx, pillX, pillY, pillW, pillH, 10 * scaleFactor);
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.65)';
         ctx.fill();
 
         ctx.fillStyle = '#ffffff';
@@ -1249,8 +1247,9 @@ Pastikan setiap adegan memiliki pembagian waktu yang pas hingga total ${durObj.s
       }
     }
 
-    function renderSinglePreviewFrame() {
+    window.renderSinglePreviewFrame = function renderSinglePreviewFrame() {
       const canvas = document.getElementById('videoEditorCanvas');
+      if (!canvas) return;
       const ctx = canvas.getContext('2d');
       const cw = canvas.width;
       const ch = canvas.height;
@@ -1286,7 +1285,7 @@ Pastikan setiap adegan memiliki pembagian waktu yang pas hingga total ${durObj.s
     // Core Playback & Recording Engine with Persistent Shared AudioContext
     async function jalankanUrutanKlip(recordOutput = false) {
       if (uploadedClips.length === 0) {
-        alert('Silakan tambahkan minimal 1 klip video terlebih dahulu.');
+        showToast('Silakan tambahkan minimal 1 klip video terlebih dahulu.');
         return;
       }
       if (isEditorRunning) return;
@@ -1503,20 +1502,20 @@ Pastikan setiap adegan memiliki pembagian waktu yang pas hingga total ${durObj.s
       }
     }
 
-    function previewMergedVideo() {
+    window.previewMergedVideo = function previewMergedVideo() {
       jalankanUrutanKlip(false);
-    }
+    };
 
-    function exportMergedVideo() {
+    window.exportMergedVideo = function exportMergedVideo() {
       jalankanUrutanKlip(true);
-    }
+    };
 
-    function stopEditorPlayback() {
+    window.stopEditorPlayback = function stopEditorPlayback() {
       isEditorRunning = false;
       if (activeRafId) cancelAnimationFrame(activeRafId);
       document.getElementById('stopPlaybackBtn').classList.add('hidden');
       document.getElementById('editorStatusText').textContent = 'Dihentikan';
-    }
+    };
 
     // Initialize default canvas frame on load
     window.addEventListener('DOMContentLoaded', () => {
