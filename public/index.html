@@ -478,14 +478,14 @@
               <button type="button" id="shareMobileBtn" onclick="shareVideoToMobile()" class="px-3 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-extrabold text-xs">
                 📲 Kirim / Simpan
               </button>
-              <button type="button" id="directDownloadBtn" onclick="downloadMergedVideoNow()" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs">
+              <a id="directDownloadBtn" href="#" download="drama_iklan_umkm.webm" onclick="return handleDirectDownloadClick(event)" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs inline-block text-center">
                 ⬇️ Unduh Video
-              </button>
+              </a>
             </div>
           </div>
           <video id="finalResultVideoPlayer" controls playsinline webkit-playsinline class="w-full max-h-[240px] rounded-xl bg-black"></video>
           <p class="text-[10px] font-semibold text-emerald-900 leading-snug">
-            💡 Jika tidak otomatis terunduh (misalnya dibuka dari dalam WhatsApp/IG), tekan <strong>Kirim / Simpan</strong> lalu pilih <em>Simpan Video</em>, atau tekan tombol <strong>⋮</strong> di sudut pemutar video di atas → <strong>Download</strong>.
+            💡 Tekan <strong>Unduh Video</strong> untuk langsung menyimpan ke folder <em>Download / Galeri HP</em>, atau tekan <strong>Kirim / Simpan</strong> untuk membagikan ke WhatsApp.
           </p>
         </div>
       </div>
@@ -984,8 +984,9 @@ Struktur JSON wajib:
     let activeMediaRecorder = null;
     let activeRafId = null;
     let lastMergedBlob = null;
-    let lastMergedFilename = 'drama_iklan_umkm.mp4';
+    let lastMergedFilename = 'drama_iklan_umkm.webm';
     let lastMergedUrl = null;
+    let lastServerDownloadUrl = '';
 
     function getResolutionConfig() {
       const quality = document.getElementById('qualityModeSelect')?.value || 'ultra';
@@ -1489,14 +1490,32 @@ Struktur JSON wajib:
       ctx.fillStyle = '#1e293b';
       ctx.fillRect(0, 0, cfg.w, cfg.h);
 
+      // Siapkan 1 elemen video terpasang di DOM agar Android WebView / APK merender frame dengan lancar
+      const stageVid = document.createElement('video');
+      stageVid.setAttribute('playsinline', '');
+      stageVid.setAttribute('webkit-playsinline', '');
+      stageVid.preload = 'auto';
+      stageVid.style.position = 'fixed';
+      stageVid.style.left = '-9999px';
+      stageVid.style.top = '0';
+      stageVid.style.width = '16px';
+      stageVid.style.height = '16px';
+      stageVid.style.opacity = '0.01';
+      stageVid.style.pointerEvents = 'none';
+      document.body.appendChild(stageVid);
+
       let audioCtx = null;
       let audioDest = null;
+      let stageSource = null;
       try {
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
         if (AudioCtx) {
           audioCtx = new AudioCtx();
           if (audioCtx.state === 'suspended') await audioCtx.resume();
           audioDest = audioCtx.createMediaStreamDestination();
+          stageSource = audioCtx.createMediaElementSource(stageVid);
+          stageSource.connect(audioDest);
+          stageSource.connect(audioCtx.destination);
         }
       } catch (_) {
         audioCtx = null;
@@ -1602,23 +1621,11 @@ Struktur JSON wajib:
           const endSec = Math.min(maxDur, Math.max(startSec + 0.4, clip.endTime || maxDur));
           const clipDur = endSec - startSec;
 
-          const vid = document.createElement('video');
-          vid.src = clip.url;
-          vid.playsInline = true;
-          vid.setAttribute('playsinline', '');
-          vid.setAttribute('webkit-playsinline', '');
-          vid.preload = 'auto';
-          vid.muted = false;
-          vid.volume = 1.0;
-
-          let clipSource = null;
-          if (audioCtx && audioDest) {
-            try {
-              clipSource = audioCtx.createMediaElementSource(vid);
-              clipSource.connect(audioDest);
-              clipSource.connect(audioCtx.destination);
-            } catch (_) {}
-          }
+          stageVid.pause();
+          stageVid.src = clip.url;
+          stageVid.muted = false;
+          stageVid.volume = 1.0;
+          stageVid.load();
 
           await new Promise((res) => {
             let done = false;
@@ -1628,19 +1635,20 @@ Struktur JSON wajib:
                 res();
               }
             };
-            const timer = setTimeout(finish, 2500);
-            vid.onloadedmetadata = () => {
-              if (startSec > 0.05) vid.currentTime = startSec;
-              else {
+            const timer = setTimeout(finish, 3000);
+            stageVid.onloadeddata = () => {
+              if (startSec > 0.05) {
+                stageVid.currentTime = startSec;
+              } else {
                 clearTimeout(timer);
                 finish();
               }
             };
-            vid.onseeked = () => {
+            stageVid.onseeked = () => {
               clearTimeout(timer);
               finish();
             };
-            vid.onerror = () => {
+            stageVid.onerror = () => {
               clearTimeout(timer);
               finish();
             };
@@ -1652,11 +1660,11 @@ Struktur JSON wajib:
           }
 
           try {
-            await vid.play();
+            await stageVid.play();
           } catch (_) {
             try {
-              vid.muted = true;
-              await vid.play();
+              stageVid.muted = true;
+              await stageVid.play();
             } catch (__) {}
           }
 
@@ -1666,7 +1674,7 @@ Struktur JSON wajib:
 
             function stepFrame(nowPerf) {
               if (!isEditorRunning) {
-                vid.pause();
+                stageVid.pause();
                 resolveClip();
                 return;
               }
@@ -1674,8 +1682,8 @@ Struktur JSON wajib:
               const localElapsed = (currentNow - clipStartPerf) / 1000;
               const currentAnimTime = (currentNow - globalStartPerf) / 1000;
 
-              if (vid.currentTime >= endSec || vid.ended || localElapsed >= clipDur + 0.25) {
-                vid.pause();
+              if (stageVid.currentTime >= endSec || stageVid.ended || localElapsed >= clipDur + 0.25) {
+                stageVid.pause();
                 resolveClip();
                 return;
               }
@@ -1686,7 +1694,7 @@ Struktur JSON wajib:
                 const ch = canvas.height;
                 ctx.fillStyle = '#1e293b';
                 ctx.fillRect(0, 0, cw, ch);
-                drawVideoCover(ctx, vid, cw, ch);
+                drawVideoCover(ctx, stageVid, cw, ch);
                 drawUmkmOverlays(ctx, cw, ch, clip.subtitle, currentAnimTime);
 
                 if (recordOutput) {
@@ -1701,14 +1709,14 @@ Struktur JSON wajib:
             activeRafId = requestAnimationFrame(stepFrame);
           });
 
-          if (clipSource) {
-            try { clipSource.disconnect(); } catch (_) {}
-          }
-          vid.removeAttribute('src');
-          vid.load();
           globalElapsedSec += clipDur;
         }
       } finally {
+        stageVid.pause();
+        stageVid.removeAttribute('src');
+        stageVid.load();
+        try { document.body.removeChild(stageVid); } catch (_) {}
+
         if (bgmEl) {
           bgmEl.pause();
           bgmEl.currentTime = 0;
@@ -1735,6 +1743,7 @@ Struktur JSON wajib:
               try { URL.revokeObjectURL(lastMergedUrl); } catch (_) {}
             }
             lastMergedUrl = URL.createObjectURL(lastMergedBlob);
+            lastServerDownloadUrl = '';
 
             const safeBrand = (document.getElementById('brandWatermarkInput').value.trim() || 'drama_umkm')
               .toLowerCase()
@@ -1742,17 +1751,48 @@ Struktur JSON wajib:
             lastMergedFilename = `${safeBrand}_gabungan.${ext}`;
 
             const sizeMb = (lastMergedBlob.size / (1024 * 1024)).toFixed(2);
-            document.getElementById('finalFileInfo').textContent = `Ukuran ${sizeMb} MB (${ext.toUpperCase()}) • Siap disimpan.`;
+            document.getElementById('finalFileInfo').textContent = `Ukuran ${sizeMb} MB (${ext.toUpperCase()}) • Menyiapkan link unduhan...`;
 
             const player = document.getElementById('finalResultVideoPlayer');
             player.src = lastMergedUrl;
             player.load();
 
+            const dlBtn = document.getElementById('directDownloadBtn');
+            if (dlBtn) {
+              dlBtn.href = lastMergedUrl;
+              dlBtn.download = lastMergedFilename;
+            }
+
             const boxHasil = document.getElementById('downloadResultBox');
             boxHasil.classList.remove('hidden');
             boxHasil.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-            showToast(`✅ Video selesai (${sizeMb} MB)! Tekan tombol Unduh Video atau Kirim / Simpan.`);
+            // Unggah sementara ke server agar APK Android / WebView bisa mengunduh lewat URL HTTP asli
+            try {
+              const base64Video = await blobToBase64(lastMergedBlob);
+              const saveRes = await fetch('/api/save-video', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  base64: base64Video,
+                  mimeType: cleanMime,
+                  filename: lastMergedFilename
+                })
+              });
+              if (saveRes.ok) {
+                const saveData = await saveRes.json();
+                if (saveData.downloadUrl) {
+                  lastServerDownloadUrl = new URL(saveData.downloadUrl, window.location.origin).href;
+                  if (dlBtn) {
+                    dlBtn.href = lastServerDownloadUrl;
+                    dlBtn.setAttribute('target', '_blank');
+                  }
+                }
+              }
+            } catch (_) {}
+
+            document.getElementById('finalFileInfo').textContent = `Ukuran ${sizeMb} MB (${ext.toUpperCase()}) • Siap disimpan ke HP.`;
+            showToast(`✅ Video selesai (${sizeMb} MB)! Tekan tombol Unduh Video.`);
             downloadMergedVideoNow();
           } else if (completedNormally) {
             showToast('⚠️ Hasil rekaman kosong di browser ini. Coba buka menggunakan Google Chrome atau Safari.');
@@ -1772,9 +1812,42 @@ Struktur JSON wajib:
       }
     }
 
-    window.downloadMergedVideoNow = function downloadMergedVideoNow() {
-      if (!lastMergedBlob || !lastMergedUrl) {
+    function blobToBase64(blob) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const result = String(reader.result || '');
+          const idx = result.indexOf(',');
+          resolve(idx >= 0 ? result.slice(idx + 1) : result);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    }
+
+    window.handleDirectDownloadClick = function handleDirectDownloadClick(event) {
+      if (!lastMergedBlob) {
+        event.preventDefault();
         showToast('Belum ada video yang digabungkan.');
+        return false;
+      }
+      if (lastServerDownloadUrl) {
+        showToast('Mengunduh video ke HP Anda...');
+        return true;
+      }
+      event.preventDefault();
+      downloadMergedVideoNow();
+      return false;
+    };
+
+    window.downloadMergedVideoNow = function downloadMergedVideoNow() {
+      if (!lastMergedBlob) {
+        showToast('Belum ada video yang digabungkan.');
+        return;
+      }
+      if (lastServerDownloadUrl) {
+        window.location.href = lastServerDownloadUrl;
+        showToast('Mengunduh video ke folder Download HP...');
         return;
       }
       try {
@@ -1787,7 +1860,7 @@ Struktur JSON wajib:
         setTimeout(() => {
           try { document.body.removeChild(a); } catch (_) {}
         }, 2000);
-        showToast('Mengunduh video... Cek folder Download / Galeri HP.');
+        showToast('Mengunduh video... Cek folder Download HP.');
       } catch (_) {
         showToast('Tekan tombol Kirim / Simpan atau ikon titik tiga di pemutar video.');
       }
