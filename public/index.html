@@ -3,455 +3,575 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DramaUMKM Studio — Belajar Berbagi Berkarya Bersama</title>
+  <title>DramaUMKM Jawara Depok — Belajar Berbagi Berkarya Bersama</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
   <style>
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      background: linear-gradient(180deg, #fff1f5 0%, #ffe4ec 45%, #fff8f1 100%);
-      color: #1c1917;
+      background-color: #eef2f7;
+      color: #0f172a;
       font-size: 16px;
     }
-    .warm-card {
-      background: #fffdfb;
-      border: 2px solid #f472b655;
-      box-shadow: 0 10px 26px -4px rgba(190, 24, 93, 0.08);
+    /* Pola Geometri Segitiga Warna-Warni Khas Jawara Depok */
+    .geometric-banner {
+      background:
+        linear-gradient(115deg, rgba(255,255,255,0.92) 24%, rgba(255,255,255,0.88) 76%),
+        conic-gradient(from 45deg at 12% 30%, #ef4444 0deg 60deg, #f97316 60deg 120deg, #eab308 120deg 180deg, #84cc16 180deg 240deg, #0ea5e9 240deg 300deg, #8b5cf6 300deg 360deg);
+      position: relative;
+      overflow: hidden;
     }
-    .gradient-text {
-      background: linear-gradient(135deg, #be185d 0%, #e11d48 55%, #d97706 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
+    .geometric-banner::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(135deg, #ef4444 14%, transparent 14.5%),
+        linear-gradient(225deg, #facc15 16%, transparent 16.5%),
+        linear-gradient(45deg, #f97316 15%, transparent 15.5%),
+        linear-gradient(315deg, #65a30d 17%, transparent 17.5%),
+        linear-gradient(160deg, #0284c7 12%, transparent 12.5%);
+      background-size: 95px 95px;
+      background-position: -15px -10px, 100% 0, 0 100%, 100% 100%, 50% 0;
+      background-repeat: no-repeat;
+      opacity: 0.92;
+      pointer-events: none;
     }
-    ::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
     }
-    ::-webkit-scrollbar-track {
-      background: #ffe4ec;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #db2777;
-      border-radius: 999px;
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
     }
   </style>
 </head>
-<body class="min-h-screen antialiased selection:bg-pink-300 selection:text-stone-950">
+<body class="min-h-screen flex items-center justify-center sm:py-4">
 
-  <!-- Header -->
-  <header class="sticky top-0 z-40 bg-[#fff5f8]/95 backdrop-blur border-b-2 border-pink-300/80 shadow-sm">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-3">
-      <div class="flex items-center gap-3">
-        <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-pink-500 via-rose-500 to-amber-500 flex items-center justify-center shadow-md shrink-0">
-          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-          </svg>
-        </div>
-        <div>
-          <span class="font-extrabold text-lg sm:text-xl tracking-tight text-stone-900">DramaUMKM <span class="gradient-text">Studio</span></span>
-          <p class="text-xs sm:text-sm font-extrabold text-pink-800">Belajar Berbagi Berkarya Bersama</p>
-        </div>
-      </div>
+  <!-- Frame Aplikasi Responsif (Full di Layar HP, Rapi seperti Layar Smartphone di Laptop) -->
+  <div class="w-full sm:max-w-[460px] min-h-screen sm:min-h-[850px] sm:max-h-[900px] bg-white sm:rounded-[38px] sm:border-[6px] sm:border-slate-800 sm:shadow-2xl flex flex-col justify-between relative overflow-hidden">
 
-      <div class="flex items-center gap-2 shrink-0">
-        <span id="apiStatusBadge" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs sm:text-sm font-extrabold bg-pink-100 text-pink-900 border border-pink-400">
-          <span id="apiStatusDot" class="w-2.5 h-2.5 rounded-full bg-pink-500"></span>
-          <span id="apiStatusText">Mengecek API...</span>
-        </span>
-        <button onclick="openApiModal()" class="px-4 py-2 rounded-xl bg-pink-200 hover:bg-pink-300 text-sm font-extrabold text-stone-900 border border-pink-400 transition">
-          Atur API Key
-        </button>
+    <!-- Notifikasi Toast -->
+    <div id="toastNotification" class="hidden absolute top-24 left-4 right-4 z-50 rounded-2xl bg-slate-900 text-white px-4 py-3 text-sm font-extrabold shadow-xl text-center"></div>
+
+    <!-- Drawer Menu Samping -->
+    <div id="sideDrawer" class="hidden absolute inset-0 z-50 bg-slate-900/50 backdrop-blur-xs">
+      <div class="w-72 h-full bg-white p-6 flex flex-col justify-between shadow-2xl">
+        <div class="space-y-5">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+            <span class="font-black text-base text-slate-900">JAWARA DEPOK</span>
+            <button onclick="toggleDrawer(false)" class="w-9 h-9 rounded-full bg-slate-100 text-slate-700 font-bold text-xl">&times;</button>
+          </div>
+          <div class="space-y-2">
+            <button onclick="switchTab('beranda'); toggleDrawer(false)" class="w-full text-left px-4 py-3 rounded-xl bg-sky-50 text-sky-800 font-extrabold text-sm">🏠 Beranda Utama</button>
+            <button onclick="switchTab('naskah'); toggleDrawer(false)" class="w-full text-left px-4 py-3 rounded-xl hover:bg-slate-50 text-slate-800 font-extrabold text-sm">🎬 Buat Naskah Drama</button>
+            <button onclick="switchTab('editor'); toggleDrawer(false)" class="w-full text-left px-4 py-3 rounded-xl hover:bg-slate-50 text-slate-800 font-extrabold text-sm">🎞️ Gabung Video HP</button>
+            <button onclick="switchTab('contoh'); toggleDrawer(false)" class="w-full text-left px-4 py-3 rounded-xl hover:bg-slate-50 text-slate-800 font-extrabold text-sm">⚡ Contoh Kategori UMKM</button>
+            <button onclick="switchTab('profil'); toggleDrawer(false)" class="w-full text-left px-4 py-3 rounded-xl hover:bg-slate-50 text-slate-800 font-extrabold text-sm">🔑 API Key &amp; Profil Usaha</button>
+          </div>
+        </div>
+        <div class="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-xs text-amber-950 font-bold leading-relaxed">
+          “Belajar Berbagi Berkarya Bersama • Maju Terus Pelaku UMKM Kecamatan Limo”
+        </div>
       </div>
     </div>
-  </header>
 
-  <!-- Toast Notification -->
-  <div id="toastNotification" class="fixed bottom-5 right-4 left-4 sm:left-auto z-50 hidden sm:max-w-md rounded-2xl border-2 border-pink-600 bg-[#fffdfb] px-5 py-3.5 text-sm font-extrabold text-stone-900 shadow-2xl"></div>
+    <!-- Modal Pengaturan API Key -->
+    <div id="apiModal" class="hidden absolute inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+      <div class="bg-white w-full rounded-3xl p-5 shadow-2xl space-y-4 border border-slate-200">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+          <h3 class="text-base font-extrabold text-slate-900">Sambungan Gemini API</h3>
+          <button onclick="closeApiModal()" class="text-slate-500 hover:text-slate-900 text-2xl font-bold">&times;</button>
+        </div>
+        <div id="modalApiStatusInfo" class="p-3 rounded-xl bg-amber-50 border border-amber-300 text-xs font-extrabold text-slate-900">
+          Status: Mengecek sambungan Gemini API...
+        </div>
+        <p class="text-xs text-slate-600 leading-relaxed">
+          Jika sudah terhubung ke server Railway dengan <code class="px-1 py-0.5 rounded bg-slate-100 font-bold text-slate-900">GEMINI_API_KEY</code>, kolom ini boleh dikosongkan.
+        </p>
+        <input id="manualApiKeyInput" type="password" placeholder="Tempel Gemini API Key (AIzaSy...)" class="w-full px-3.5 py-3 rounded-xl bg-slate-50 border-2 border-slate-300 text-sm text-slate-900 focus:border-sky-600 focus:outline-none" />
+        <div class="flex justify-end gap-2">
+          <button onclick="closeApiModal()" class="px-4 py-2.5 rounded-xl bg-slate-100 text-xs font-extrabold text-slate-700">Tutup</button>
+          <button onclick="saveApiKey()" class="px-4 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-extrabold">Simpan Key</button>
+        </div>
+      </div>
+    </div>
 
-  <!-- Main Workspace -->
-  <main class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-8">
+    <!-- TOP BAR: Hamburger Menu, Logo Jawara Depok, Status API -->
+    <header class="px-5 pt-4 pb-2 flex items-start justify-between bg-white sticky top-0 z-30 border-b border-slate-100">
+      <button onclick="toggleDrawer(true)" aria-label="Buka Menu" class="p-2 -ml-2 rounded-xl hover:bg-slate-100 text-sky-600 transition">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
 
-    <!-- Top Section: Script & Prompt Generator -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <!-- Logo Jawara Depok (Persis Seperti Mockup) -->
+      <div class="flex flex-col items-center select-none -mt-1">
+        <svg viewBox="0 0 220 132" class="w-36 h-auto" xmlns="http://www.w3.org/2000/svg" aria-label="Logo Jawara Depok Jaringan Wirausaha">
+          <polygon points="18,86 72,54 79,65 25,97" fill="#ea580c" />
+          <polygon points="54,88 98,62 105,73 61,99" fill="#eab308" />
+          <polygon points="32,64 74,39 81,50 39,75" fill="#dc2626" />
+          <circle cx="96" cy="20" r="8.5" fill="#dc2626" />
+          <polygon points="73,41 106,22 119,4 129,10 113,34 79,52" fill="#dc2626" />
+          <circle cx="134" cy="16" r="8.5" fill="#facc15" />
+          <polygon points="121,24 144,39 175,37 175,50 139,52 113,34" fill="#facc15" />
+          <circle cx="163" cy="66" r="8.5" fill="#65a30d" />
+          <polygon points="146,52 157,52 157,90 135,106 127,96 146,83" fill="#65a30d" />
+          <circle cx="117" cy="100" r="8.5" fill="#0284c7" />
+          <polygon points="84,96 115,81 138,94 131,104 114,94 91,107" fill="#0284c7" />
+          <text x="110" y="118" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-weight="900" font-size="18.5" fill="#0f172a" letter-spacing="0.6">JAWARA DEPOK</text>
+          <text x="110" y="129" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-weight="800" font-size="8.2" fill="#334155" letter-spacing="2.2">JARINGAN WIRAUSAHA</text>
+        </svg>
+      </div>
 
-      <!-- Left Column: Form -->
-      <section class="lg:col-span-5 warm-card rounded-3xl p-5 sm:p-6 space-y-5">
-        <div class="border-b-2 border-pink-200 pb-3.5">
-          <h1 class="text-xl sm:text-2xl font-extrabold text-stone-900 flex items-center gap-2">
-            <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-pink-600 text-white text-base">1</span>
-            Konsep Drama &amp; Iklan UMKM
+      <!-- Indikator Status Gemini API -->
+      <button onclick="openApiModal()" id="apiStatusBadge" title="Status Sambungan Gemini API" class="mt-1 inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full text-[11px] font-extrabold bg-slate-100 text-slate-800 border border-slate-300">
+        <span id="apiStatusDot" class="w-2 h-2 rounded-full bg-amber-500"></span>
+        <span id="apiStatusText">API</span>
+      </button>
+    </header>
+
+    <!-- KONTEN UTAMA (5 Halaman Mudah Diakses di HP) -->
+    <main class="flex-1 px-5 pb-6 overflow-y-auto no-scrollbar space-y-5">
+
+      <!-- =========================================================
+           HALAMAN 1: BERANDA UTAMA (Tampilan Persis Seperti Mockup)
+           ========================================================= -->
+      <div id="view-beranda" class="space-y-5 pt-2">
+        <div>
+          <h1 id="greetingName" class="text-[22px] leading-tight font-extrabold text-[#1e293b]">
+            Selamat Datang,<br />Pelaku UMKM Depok!
           </h1>
-          <p class="text-sm font-medium text-stone-700 mt-1">Isi nama produk &amp; keunggulannya, lalu buat cerita otomatis.</p>
-        </div>
-
-        <!-- Preset Quick Fill -->
-        <div>
-          <label class="block text-sm font-extrabold text-stone-800 mb-2">Contoh Cepat Semua Kategori UMKM (Tinggal Klik):</label>
-          <div class="grid grid-cols-2 gap-2">
-            <button type="button" onclick="applyPreset('kuliner')" class="px-3 py-2.5 rounded-xl bg-pink-100/90 hover:bg-pink-200 text-sm font-bold text-stone-900 border border-pink-300 transition text-left">🍜 Kuliner &amp; Lauk</button>
-            <button type="button" onclick="applyPreset('kue')" class="px-3 py-2.5 rounded-xl bg-pink-100/90 hover:bg-pink-200 text-sm font-bold text-stone-900 border border-pink-300 transition text-left">🍪 Kue &amp; Camilan</button>
-            <button type="button" onclick="applyPreset('herbal')" class="px-3 py-2.5 rounded-xl bg-pink-100/90 hover:bg-pink-200 text-sm font-bold text-stone-900 border border-pink-300 transition text-left">🫚 Minuman &amp; Herbal</button>
-            <button type="button" onclick="applyPreset('sabun')" class="px-3 py-2.5 rounded-xl bg-pink-100/90 hover:bg-pink-200 text-sm font-bold text-stone-900 border border-pink-300 transition text-left">🍋 Sabun &amp; Pembersih</button>
-            <button type="button" onclick="applyPreset('skincare')" class="px-3 py-2.5 rounded-xl bg-pink-100/90 hover:bg-pink-200 text-sm font-bold text-stone-900 border border-pink-300 transition text-left">✨ Skincare &amp; Tubuh</button>
-            <button type="button" onclick="applyPreset('fashion')" class="px-3 py-2.5 rounded-xl bg-pink-100/90 hover:bg-pink-200 text-sm font-bold text-stone-900 border border-pink-300 transition text-left">👗 Fashion &amp; Hijab</button>
-            <button type="button" onclick="applyPreset('kerajinan')" class="px-3 py-2.5 rounded-xl bg-pink-100/90 hover:bg-pink-200 text-sm font-bold text-stone-900 border border-pink-300 transition text-left">🧺 Kerajinan &amp; Hampers</button>
-            <button type="button" onclick="applyPreset('pertanian')" class="px-3 py-2.5 rounded-xl bg-pink-100/90 hover:bg-pink-200 text-sm font-bold text-stone-900 border border-pink-300 transition text-left">🌱 Pertanian &amp; Tanaman</button>
-            <button type="button" onclick="applyPreset('jasa')" class="col-span-2 px-3 py-2.5 rounded-xl bg-pink-100/90 hover:bg-pink-200 text-sm font-bold text-stone-900 border border-pink-300 transition text-left">🚚 Jasa &amp; Layanan Rumah Tangga</button>
-          </div>
-        </div>
-
-        <div class="space-y-4">
-          <div>
-            <label class="block text-sm font-extrabold text-stone-900 mb-1.5">Nama Brand / Produk Ibu *</label>
-            <input id="productName" type="text" placeholder="Contoh: Minuman Rempah Jahe Merah & Serai 250ml" class="w-full px-4 py-3 rounded-xl bg-white border-2 border-pink-300 text-base font-semibold text-stone-900 placeholder-stone-400 focus:outline-none focus:border-pink-600" />
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-            <div>
-              <label class="block text-sm font-extrabold text-stone-900 mb-1.5">Kategori Umum UMKM</label>
-              <select id="category" class="w-full px-3.5 py-3 rounded-xl bg-white border-2 border-pink-300 text-sm sm:text-base font-semibold text-stone-900 focus:outline-none focus:border-pink-600">
-                <option value="Kuliner, Makanan Berat & Lauk Siap Saji">Kuliner, Makanan &amp; Lauk Siap Saji</option>
-                <option value="Kue, Roti & Camilan Kering">Kue, Roti &amp; Camilan Kering</option>
-                <option value="Minuman Kekinian, Kopi, Rempah & Herbal">Minuman, Kopi, Rempah &amp; Herbal</option>
-                <option value="Sabun Cuci Piring, Deterjen & Pembersih Rumah">Sabun Cuci Piring &amp; Pembersih</option>
-                <option value="Skincare, Kosmetik & Perawatan Tubuh">Skincare &amp; Perawatan Tubuh</option>
-                <option value="Fashion, Busana Muslim, Hijab & Aksesoris">Fashion, Busana &amp; Hijab</option>
-                <option value="Kerajinan Tangan, Souvenir & Hampers">Kerajinan, Souvenir &amp; Hampers</option>
-                <option value="Pertanian, Hidroponik, Bibit & Tanaman Hias">Pertanian, Bibit &amp; Tanaman</option>
-                <option value="Perabot, Dekorasi & Perlengkapan Rumah">Perlengkapan &amp; Dekorasi Rumah</option>
-                <option value="Jasa, Laundry, Jahit & Layanan Rumah Tangga">Jasa &amp; Layanan Rumah Tangga</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-sm font-extrabold text-stone-900 mb-1.5">Tempat Tayang Video</label>
-              <select id="platform" class="w-full px-3.5 py-3 rounded-xl bg-white border-2 border-pink-300 text-sm sm:text-base font-semibold text-stone-900 focus:outline-none focus:border-pink-600">
-                <option value="TikTok & Instagram Reels (9:16)">TikTok / Reels (Tegak)</option>
-                <option value="WhatsApp Status & Facebook (9:16 / 1:1)">Status WA &amp; Facebook</option>
-                <option value="YouTube Shorts (9:16)">YouTube Shorts</option>
-                <option value="YouTube Mini Drama / Web Series (16:9)">YouTube Mendatar (16:9)</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Duration Slider -->
-          <div class="p-4 rounded-2xl bg-pink-100/75 border-2 border-pink-300 space-y-2">
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <label class="text-sm font-extrabold text-stone-900">Lama Durasi Video</label>
-              <span id="durationLabel" class="px-3 py-1 rounded-lg bg-pink-600 text-white text-sm font-extrabold">30 Detik (5 Adegan)</span>
-            </div>
-            <input id="durationSlider" type="range" min="0" max="7" value="2" oninput="updateDurationDisplay()" class="w-full h-3 accent-pink-600 cursor-pointer" />
-            <div class="flex justify-between text-xs font-bold text-stone-700">
-              <span>10 dtk</span>
-              <span>30 dtk</span>
-              <span>1 mnt</span>
-              <span>3 mnt</span>
-              <span>5 mnt</span>
-              <span>10 mnt</span>
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-sm font-extrabold text-stone-900 mb-1.5">Keunggulan Produk &amp; Manfaatnya</label>
-            <textarea id="usp" rows="3" placeholder="Contoh: Ampuh angkat lemak membandel & bau amis dalam sekali usap, busa melimpah, lembut di tangan, dan hemat pemakaian." class="w-full px-4 py-3 rounded-xl bg-white border-2 border-pink-300 text-base font-medium text-stone-900 placeholder-stone-400 focus:outline-none focus:border-pink-600 leading-relaxed"></textarea>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-            <div>
-              <label class="block text-sm font-extrabold text-stone-900 mb-1.5">Gaya Cerita</label>
-              <select id="genre" class="w-full px-3.5 py-3 rounded-xl bg-white border-2 border-pink-300 text-sm sm:text-base font-semibold text-stone-900 focus:outline-none focus:border-pink-600">
-                <option value="Komedi Relatable Sehari-hari (Plot Twist)">Komedi Lucu Sehari-hari</option>
-                <option value="Drama Keluarga Hangat & Menyentuh Hati">Drama Keluarga Hangat</option>
-                <option value="Konflik Tetangga / Rekan Kerja (Gengsi vs Solusi)">Obrolan Tetangga / Teman</option>
-                <option value="Storytelling Perjuangan Founder UMKM">Kisah Usaha Rumahan</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-sm font-extrabold text-stone-900 mb-1.5">Promo &amp; Nomor WA Pesan</label>
-              <input id="cta" type="text" placeholder="Contoh: Beli 2 Gratis 1 • WA 0812-3456-7890" class="w-full px-3.5 py-3 rounded-xl bg-white border-2 border-pink-300 text-sm sm:text-base font-semibold text-stone-900 placeholder-stone-400 focus:outline-none focus:border-pink-600" />
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-sm font-extrabold text-stone-900 mb-1.5">Gaya Tampilan Video AI</label>
-            <select id="visualStyle" class="w-full px-3.5 py-3 rounded-xl bg-white border-2 border-pink-300 text-sm sm:text-base font-semibold text-stone-900 focus:outline-none focus:border-pink-600">
-              <option value="Cinematic Realistic Indonesian Street/Home Lifestyle (Cocok untuk Veo 3, Kling AI, Runway Gen-3)">Suasana Rumah / Dapur Indonesia Asli</option>
-              <option value="UGC Natural Smartphone Aesthetic (Gaya konten kreator TikTok organik)">Gaya Rekaman HP Sehari-hari</option>
-              <option value="Commercial Studio Food & Product Macro Lighting">Tampilan Produk Jelas &amp; Menggugah Selera</option>
-              <option value="3D Pixar-Style Cute Indonesian Animation">Animasi Kartun 3D Lucu</option>
-            </select>
-          </div>
-        </div>
-
-        <button id="generateBtn" onclick="generateDramaScript()" class="w-full py-4 px-5 rounded-2xl bg-gradient-to-r from-pink-600 via-rose-600 to-amber-500 hover:from-pink-500 hover:to-amber-400 text-white font-extrabold text-base sm:text-lg shadow-lg transition flex items-center justify-center gap-2">
-          ⚡ Buat Naskah Cerita &amp; Prompt Video
-        </button>
-      </section>
-
-      <!-- Right Column: Generated Script & Scene Breakdown -->
-      <section class="lg:col-span-7 warm-card rounded-3xl p-5 sm:p-6 min-h-[460px] flex flex-col justify-between">
-        <div>
-          <div class="flex flex-wrap items-center justify-between gap-3 border-b-2 border-pink-200 pb-3.5">
-            <div>
-              <h2 class="text-xl sm:text-2xl font-extrabold text-stone-900 flex items-center gap-2">
-                <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-pink-600 text-white text-base">2</span>
-                Hasil Cerita, Dialog &amp; Prompt Adegan
-              </h2>
-              <p class="text-sm font-medium text-stone-700 mt-1">Salin tulisan prompt tiap adegan untuk membuat potongan videonya.</p>
-            </div>
-            <div id="outputActions" class="hidden flex items-center gap-2">
-              <button onclick="copyAllScript()" class="px-4 py-2.5 rounded-xl bg-pink-200 hover:bg-pink-300 text-sm font-extrabold text-stone-900 border border-pink-400">📋 Salin Semua</button>
-              <button onclick="downloadScriptTxt()" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-sm font-extrabold text-white">⬇️ Simpan Teks</button>
-            </div>
-          </div>
-
-          <!-- Empty State -->
-          <div id="emptyState" class="py-16 text-center space-y-3 px-4">
-            <div class="text-4xl">📝</div>
-            <h3 class="text-lg sm:text-xl font-extrabold text-stone-900">Belum Ada Naskah Cerita</h3>
-            <p class="text-base text-stone-700 max-w-lg mx-auto leading-relaxed">
-              Silakan isi <strong>Nama Produk</strong> di kotak sebelah kiri (atau tekan tombol <strong>Contoh Cepat</strong>), lalu tekan tombol <strong>Buat Naskah Cerita</strong>.
-            </p>
-          </div>
-
-          <!-- Loading State -->
-          <div id="loadingState" class="hidden py-16 text-center space-y-3">
-            <div class="w-12 h-12 border-4 border-pink-300 border-t-pink-600 rounded-full animate-spin mx-auto"></div>
-            <p class="text-base sm:text-lg font-extrabold text-stone-900">Sedang Menulis Cerita &amp; Dialog Iklan...</p>
-          </div>
-
-          <!-- Script Result Container -->
-          <div id="scriptResult" class="hidden mt-4 space-y-4">
-            <div class="p-4 rounded-2xl bg-pink-100/80 border-2 border-pink-300 space-y-2">
-              <div class="flex flex-wrap items-center justify-between gap-2">
-                <span id="resBadge" class="px-3 py-1 rounded-full text-xs sm:text-sm font-extrabold bg-pink-600 text-white"></span>
-                <span id="resHookTag" class="text-xs sm:text-sm font-bold text-stone-700"></span>
-              </div>
-              <h3 id="resTitle" class="text-lg sm:text-xl font-extrabold text-stone-900"></h3>
-              <p id="resSynopsis" class="text-sm sm:text-base text-stone-800 leading-relaxed"></p>
-            </div>
-            <div id="scenesContainer" class="space-y-4 max-h-[520px] overflow-y-auto pr-1"></div>
-          </div>
-        </div>
-      </section>
-    </div>
-
-    <!-- Bottom Section: Lightweight Mobile-Friendly UMKM Video Merger & Editor -->
-    <section class="warm-card rounded-3xl p-5 sm:p-7 space-y-6">
-      <div class="flex flex-wrap items-center justify-between gap-3 border-b-2 border-pink-200 pb-4">
-        <div>
-          <span class="px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-900 border border-emerald-400">STUDIO GABUNG VIDEO RINGAN DI HP</span>
-          <h2 class="text-xl sm:text-2xl font-extrabold text-stone-900 mt-2 flex items-center gap-2">
-            <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-pink-600 text-white text-base">3</span>
-            Gabungkan Video Iklan &amp; Tambah Tulisan
-          </h2>
-          <p class="text-sm sm:text-base text-stone-700 mt-1 leading-relaxed">
-            Pilih video dari galeri HP, masukkan nama produk, harga, dan nomor WA, lalu tekan <strong>Gabung &amp; Simpan</strong>.
+          <p class="text-xs font-extrabold text-sky-700 mt-1">
+            Belajar Berbagi Berkarya Bersama
           </p>
         </div>
-        <label class="cursor-pointer px-5 py-3.5 rounded-2xl bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-500 hover:to-rose-500 text-white font-extrabold text-sm sm:text-base shadow-md transition flex items-center gap-2 shrink-0">
-          <span>+ Pilih Video dari HP</span>
-          <input id="videoUploadInput" type="file" accept="video/*" multiple onchange="handleVideoUpload(event)" class="hidden" />
-        </label>
-      </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-
-        <!-- Left: Clip Timeline & Lightweight Controls -->
-        <div class="lg:col-span-7 space-y-5">
-
-          <!-- Clip List -->
-          <div class="space-y-3">
-            <div class="flex items-center justify-between">
-              <h3 class="text-base sm:text-lg font-extrabold text-stone-900">Daftar Video yang Dipilih (<span id="clipCount">0</span> video)</h3>
-              <button onclick="clearAllClips()" class="text-sm font-bold text-rose-700 hover:underline">Hapus Semua</button>
-            </div>
-
-            <div id="clipListEmpty" class="p-6 rounded-2xl border-2 border-dashed border-pink-400 bg-pink-50/90 text-center space-y-2">
-              <p class="text-base font-extrabold text-stone-900">Belum ada video yang dipilih</p>
-              <p class="text-sm text-stone-700">Tekan tombol pink cerah <strong>+ Pilih Video dari HP</strong> di atas untuk memasukkan 2 atau lebih video.</p>
-            </div>
-
-            <div id="clipListContainer" class="space-y-3 max-h-[380px] overflow-y-auto pr-1"></div>
-          </div>
-
-          <!-- UMKM Branding & Performance Settings -->
-          <div class="p-4 sm:p-5 rounded-2xl bg-pink-100/70 border-2 border-pink-300 space-y-4">
-            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-pink-300 pb-2.5">
-              <h3 class="text-base sm:text-lg font-extrabold text-stone-900">Tulisan, Harga, Logo &amp; Nomor WA</h3>
-              <span class="text-xs font-extrabold text-emerald-800 bg-emerald-100 px-2.5 py-1 rounded-lg border border-emerald-400">Otomatis Ringan di HP</span>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <div>
-                <label class="block text-sm font-extrabold text-stone-900 mb-1">Kecepatan / Ukuran</label>
-                <select id="qualityModeSelect" onchange="updateCanvasAspect()" class="w-full px-3 py-2.5 rounded-xl bg-white border-2 border-emerald-500 text-sm font-bold text-stone-900">
-                  <option value="ultra" selected>🚀 Super Ringan HP (270p)</option>
-                  <option value="lite">⚡ Ringan HP (360p)</option>
-                  <option value="medium">📱 Sedang (480p)</option>
-                  <option value="hd">💻 Jernih Tinggi (HD)</option>
-                </select>
-              </div>
-              <div>
-                <label class="block text-sm font-extrabold text-stone-900 mb-1">Bentuk Layar</label>
-                <select id="aspectRatioSelect" onchange="updateCanvasAspect()" class="w-full px-3 py-2.5 rounded-xl bg-white border-2 border-pink-300 text-sm font-bold text-stone-900">
-                  <option value="9:16">Tegak (TikTok / WA)</option>
-                  <option value="16:9">Mendatar (YouTube)</option>
-                  <option value="1:1">Kotak Persegi (1:1)</option>
-                </select>
-              </div>
-              <div>
-                <label class="block text-sm font-extrabold text-stone-900 mb-1">Perpindahan Klip</label>
-                <select id="transitionSelect" class="w-full px-3 py-2.5 rounded-xl bg-white border-2 border-pink-300 text-sm font-bold text-stone-900">
-                  <option value="cut" selected>Langsung (Paling Cepat)</option>
-                  <option value="fade">Halus (Fade)</option>
-                  <option value="slide">Geser (Slide)</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- Nama Produk & Harga -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-              <div>
-                <label class="block text-sm font-extrabold text-stone-900 mb-1">
-                  Nama Produk <span class="text-pink-800">(Melayang)</span>
-                </label>
-                <input id="brandWatermarkInput" type="text" oninput="renderSinglePreviewFrame()" placeholder="Contoh: Sabun Cuci Piring Jeruk Nipis" class="w-full px-3.5 py-3 rounded-xl bg-white border-2 border-pink-300 text-base font-semibold text-stone-900 placeholder-stone-400 focus:border-pink-600 focus:outline-none" />
-              </div>
-              <div>
-                <label class="block text-sm font-extrabold text-stone-900 mb-1">
-                  Harga / Promo <span class="text-rose-700">(Kedip Pelan)</span>
-                </label>
-                <input id="promoBadgeInput" type="text" oninput="renderSinglePreviewFrame()" placeholder="Contoh: HANYA Rp 15.000 / Liter" class="w-full px-3.5 py-3 rounded-xl bg-white border-2 border-pink-300 text-base font-semibold text-stone-900 placeholder-stone-400 focus:border-pink-600 focus:outline-none" />
-              </div>
-            </div>
-
-            <!-- Nomor Telepon / WA Teks Berjalan -->
-            <div>
-              <label class="block text-sm font-extrabold text-stone-900 mb-1">
-                Nomor Telepon / WhatsApp <span class="text-purple-800">(Teks Berjalan Kuning)</span>
-              </label>
-              <input id="ctaBannerInput" type="text" oninput="renderSinglePreviewFrame()" placeholder="Contoh: Pesan WA: 0812-3456-7890 • Siap Antar" class="w-full px-3.5 py-3 rounded-xl bg-white border-2 border-pink-300 text-base font-semibold text-stone-900 placeholder-stone-400 focus:border-pink-600 focus:outline-none" />
-            </div>
-
-            <!-- Upload Logo Brand & Gambar Produk -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-              <div class="p-3.5 rounded-xl bg-white border-2 border-pink-300 space-y-2">
-                <div class="flex items-center justify-between">
-                  <label class="block text-sm font-extrabold text-stone-900">Logo Usaha (Opsional)</label>
-                  <button type="button" onclick="clearLogo()" id="clearLogoBtn" class="hidden text-xs font-extrabold text-rose-700 hover:underline">Hapus</button>
-                </div>
-                <input id="logoUploadInput" type="file" accept="image/*" onchange="handleLogoUpload(event)" class="w-full text-sm text-stone-700 file:mr-2.5 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-extrabold file:bg-pink-200 file:text-stone-900" />
-              </div>
-
-              <div class="p-3.5 rounded-xl bg-white border-2 border-pink-300 space-y-2">
-                <div class="flex items-center justify-between">
-                  <label class="block text-sm font-extrabold text-stone-900">Foto Produk (Opsional)</label>
-                  <button type="button" onclick="clearProductImg()" id="clearProductImgBtn" class="hidden text-xs font-extrabold text-rose-700 hover:underline">Hapus</button>
-                </div>
-                <input id="productImgUploadInput" type="file" accept="image/*" onchange="handleProductImgUpload(event)" class="w-full text-sm text-stone-700 file:mr-2.5 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-extrabold file:bg-amber-200 file:text-stone-900" />
-              </div>
-            </div>
-
-            <!-- Musik Latar -->
-            <div class="p-3.5 rounded-xl bg-white border-2 border-pink-300 space-y-2">
-              <div class="flex flex-wrap items-center justify-between gap-1">
-                <label class="block text-sm font-extrabold text-stone-900">Musik Latar / Suara Tambahan (Opsional)</label>
-                <span class="text-xs font-bold text-stone-600">Suara asli video tetap terdengar</span>
-              </div>
-              <input id="bgmUploadInput" type="file" accept="audio/*" onchange="handleBgmUpload(event)" class="w-full text-sm text-stone-700 file:mr-2.5 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-extrabold file:bg-purple-200 file:text-stone-900" />
-            </div>
+        <!-- Banner Geometri Warna-Warni -->
+        <div class="geometric-banner rounded-2xl border border-slate-200 shadow-md p-4 text-center">
+          <div class="relative z-10 bg-white/92 backdrop-blur-xs rounded-xl py-3.5 px-4 shadow-xs space-y-2.5">
+            <h2 class="text-lg font-extrabold text-[#1e293b] leading-snug">
+              Studio Drama &amp; Video<br />Iklan UMKM Depok
+            </h2>
+            <button onclick="switchTab('naskah')" class="px-5 py-2 rounded-full bg-[#1e293b] hover:bg-slate-800 text-white text-xs font-extrabold shadow transition">
+              Mulai Buat Iklan Sekarang
+            </button>
           </div>
         </div>
 
-        <!-- Right: Live Preview Canvas & Export -->
-        <div class="lg:col-span-5 flex flex-col items-center space-y-4">
-          <div class="w-full flex items-center justify-between">
-            <span class="text-base font-extrabold text-stone-900">Layar Contoh Video</span>
-            <span id="editorStatusText" class="px-3 py-1 rounded-full bg-pink-200 text-xs sm:text-sm text-stone-900 font-extrabold">Siap</span>
-          </div>
-
-          <div class="w-full bg-[#ffe4ec] rounded-3xl border-2 border-pink-300 p-4 flex items-center justify-center min-h-[300px]">
-            <canvas id="videoEditorCanvas" width="360" height="640" class="max-h-[380px] w-auto rounded-2xl bg-stone-900 border-2 border-pink-500 shadow-lg"></canvas>
-          </div>
-
-          <!-- Progress Bar -->
-          <div id="exportProgressWrap" class="hidden w-full space-y-1.5 bg-pink-100 p-3.5 rounded-2xl border-2 border-pink-400">
-            <div class="flex justify-between text-sm font-extrabold text-stone-900">
-              <span id="exportProgressLabel">Sedang menggabungkan video...</span>
-              <span id="exportProgressPct">0%</span>
+        <!-- 4 Kartu Menu Utama (Grid 2x2 dengan Border Warna Khas Mockup) -->
+        <div class="grid grid-cols-2 gap-3.5">
+          <!-- Kartu 1 (Merah): Buat Naskah Drama -->
+          <button onclick="switchTab('naskah')" class="p-4 rounded-2xl bg-white border-2 border-[#ef4444] hover:bg-red-50/40 shadow-sm flex items-center gap-3 text-left transition active:scale-98">
+            <div class="w-11 h-11 rounded-xl bg-red-50 flex items-center justify-center text-[#ef4444] shrink-0">
+              <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M4 4h11a2 2 0 012 2v6a2 2 0 01-2 2H8l-4 4v-4H4a2 2 0 01-2-2V6a2 2 0 012-2zm15 4h1a2 2 0 012 2v7a2 2 0 01-2 2h-1v3l-3.5-3H11a2 2 0 01-2-2v-1h6a4 4 0 004-4V8z" />
+              </svg>
             </div>
-            <div class="w-full h-3.5 bg-pink-200 rounded-full overflow-hidden">
-              <div id="exportProgressBar" class="h-full bg-gradient-to-r from-pink-600 to-amber-500 transition-all duration-150" style="width: 0%"></div>
-            </div>
-          </div>
-
-          <div class="w-full grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <button id="previewMergedBtn" onclick="previewMergedVideo()" class="py-3.5 px-4 rounded-2xl bg-pink-200 hover:bg-pink-300 text-sm sm:text-base font-extrabold text-stone-900 border-2 border-pink-500 transition flex items-center justify-center gap-2">
-              ▶ Lihat Contoh Putar
-            </button>
-            <button id="exportMergedBtn" onclick="exportMergedVideo()" class="py-3.5 px-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-sm sm:text-base font-extrabold text-white shadow-md transition flex items-center justify-center gap-2">
-              💾 Gabung &amp; Simpan
-            </button>
-          </div>
-
-          <button id="stopPlaybackBtn" onclick="stopEditorPlayback()" class="hidden w-full py-3 px-4 rounded-2xl bg-rose-600 hover:bg-rose-500 text-white text-sm sm:text-base font-extrabold transition">
-            ⏹ Berhenti
+            <span class="font-extrabold text-sm text-slate-800 leading-tight">Naskah<br />Drama AI</span>
           </button>
 
-          <!-- Hasil Video Gabungan (Langsung bisa diputar & disimpan di HP) -->
-          <div id="downloadResultBox" class="hidden w-full p-4 rounded-2xl bg-emerald-100 border-2 border-emerald-500 space-y-3">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-              <div class="text-sm text-emerald-950">
-                <p class="font-extrabold text-base">✅ Video Gabungan Sudah Jadi!</p>
-                <p id="finalFileInfo" class="text-xs sm:text-sm font-semibold text-emerald-900">Tekan tombol hijau Simpan ke HP di samping.</p>
-              </div>
-              <button type="button" id="finalDownloadBtn" onclick="triggerMobileSave()" class="px-4 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm shadow transition shrink-0">
-                ⬇️ Simpan ke HP
-              </button>
+          <!-- Kartu 2 (Kuning Emas): Contoh Kategori UMKM -->
+          <button onclick="switchTab('contoh')" class="p-4 rounded-2xl bg-white border-2 border-[#facc15] hover:bg-amber-50/40 shadow-sm flex items-center gap-3 text-left transition active:scale-98">
+            <div class="w-11 h-11 rounded-xl bg-amber-50 flex items-center justify-center text-[#eab308] shrink-0">
+              <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+              </svg>
             </div>
-            <video id="finalResultVideoPlayer" controls playsinline webkit-playsinline class="w-full max-h-[280px] rounded-xl bg-black border-2 border-emerald-600"></video>
-          </div>
+            <span class="font-extrabold text-sm text-slate-800 leading-tight">Contoh<br />UMKM</span>
+          </button>
+
+          <!-- Kartu 3 (Hijau): Gabung Video HP -->
+          <button onclick="switchTab('editor')" class="p-4 rounded-2xl bg-white border-2 border-[#65a30d] hover:bg-lime-50/40 shadow-sm flex items-center gap-3 text-left transition active:scale-98">
+            <div class="w-11 h-11 rounded-xl bg-lime-50 flex items-center justify-center text-[#65a30d] shrink-0">
+              <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <span class="font-extrabold text-sm text-slate-800 leading-tight">Gabung<br />Video HP</span>
+          </button>
+
+          <!-- Kartu 4 (Biru): Profil & API -->
+          <button onclick="switchTab('profil')" class="p-4 rounded-2xl bg-white border-2 border-[#0284c7] hover:bg-sky-50/40 shadow-sm flex items-center gap-3 text-left transition active:scale-98">
+            <div class="w-11 h-11 rounded-xl bg-sky-50 flex items-center justify-center text-[#0284c7] shrink-0">
+              <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5z" />
+              </svg>
+            </div>
+            <span class="font-extrabold text-sm text-slate-800 leading-tight">Profil &amp;<br />API Key</span>
+          </button>
+        </div>
+
+        <!-- Motivasi UMKM Kecamatan Limo -->
+        <div class="p-4 rounded-2xl bg-amber-50/90 border border-amber-200 space-y-1.5">
+          <div class="text-[11px] font-extrabold uppercase tracking-wider text-amber-800">🌟 Semangat UMKM Kecamatan Limo</div>
+          <p class="text-xs font-semibold text-slate-800 leading-relaxed">
+            “Usaha kecil yang ditekuni dengan hati besar, doa, dan kebersamaan akan melahirkan berkah yang tak pernah putus. Teruslah belajar, berbagi ilmu, dan berkarya bersama!”
+          </p>
         </div>
       </div>
-    </section>
 
-    <!-- Kata-Kata Motivasi UMKM Kecamatan Limo -->
-    <footer class="rounded-3xl border-2 border-pink-400 bg-gradient-to-r from-pink-100 via-[#fff8f1] to-amber-100 p-6 sm:p-8 text-center shadow-md space-y-2.5">
-      <div class="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-gradient-to-r from-pink-600 to-amber-500 text-white text-xs sm:text-sm font-extrabold tracking-wide uppercase">
-        🌟 Semangat UMKM Kecamatan Limo 🌟
-      </div>
-      <blockquote class="text-base sm:text-xl font-extrabold text-stone-900 max-w-3xl mx-auto leading-relaxed">
-        “Usaha kecil yang ditekuni dengan hati besar, doa, dan kebersamaan akan melahirkan berkah yang tak pernah putus. Teruslah belajar, berbagi ilmu, dan berkarya bersama — dari Kecamatan Limo kita tumbuh kuat, mandiri, dan naik kelas!”
-      </blockquote>
-      <p class="text-xs sm:text-sm font-bold text-pink-900">
-        Belajar Berbagi Berkarya Bersama • Maju Terus Pelaku UMKM Kecamatan Limo
-      </p>
-    </footer>
+      <!-- =========================================================
+           HALAMAN 2: GENERATOR NASKAH DRAMA & PROMPT AI
+           ========================================================= -->
+      <div id="view-naskah" class="hidden space-y-4 pt-2">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-extrabold text-slate-900">🎬 Buat Naskah Drama Iklan</h2>
+          <button onclick="switchTab('beranda')" class="text-xs font-extrabold text-sky-700">← Beranda</button>
+        </div>
 
-  </main>
+        <div class="space-y-3.5 bg-slate-50 p-4 rounded-2xl border border-slate-200">
+          <div>
+            <label class="block text-xs font-extrabold text-slate-800 mb-1">Nama Brand / Produk Ibu *</label>
+            <input id="productName" type="text" placeholder="Contoh: Sabun Cuci Piring KinclongJeruk" class="w-full px-3.5 py-2.5 rounded-xl bg-white border-2 border-slate-300 text-sm font-semibold text-slate-900 focus:border-red-500 focus:outline-none" />
+          </div>
 
-  <!-- API Key Modal -->
-  <div id="apiModal" class="hidden fixed inset-0 z-50 bg-stone-900/70 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="warm-card max-w-md w-full rounded-3xl p-6 space-y-4">
-      <div class="flex items-center justify-between">
-        <h3 class="text-lg font-extrabold text-stone-900">Pengaturan Gemini API Key</h3>
-        <button onclick="closeApiModal()" class="text-stone-600 hover:text-stone-900 text-2xl font-bold">&times;</button>
+          <div>
+            <label class="block text-xs font-extrabold text-slate-800 mb-1">Kategori Umum Produk UMKM</label>
+            <select id="category" class="w-full px-3.5 py-2.5 rounded-xl bg-white border-2 border-slate-300 text-sm font-semibold text-slate-900 focus:border-red-500 focus:outline-none">
+              <option value="Kuliner, Makanan Berat & Lauk Siap Saji">Kuliner, Makanan &amp; Lauk Siap Saji</option>
+              <option value="Kue, Roti & Camilan Kering">Kue, Roti &amp; Camilan Kering</option>
+              <option value="Minuman Kekinian, Kopi, Rempah & Herbal">Minuman, Kopi, Rempah &amp; Herbal</option>
+              <option value="Sabun Cuci Piring, Deterjen & Pembersih Rumah">Sabun Cuci Piring &amp; Pembersih</option>
+              <option value="Skincare, Kosmetik & Perawatan Tubuh">Skincare &amp; Perawatan Tubuh</option>
+              <option value="Fashion, Busana Muslim, Hijab & Aksesoris">Fashion, Busana &amp; Hijab</option>
+              <option value="Kerajinan Tangan, Souvenir & Hampers">Kerajinan, Souvenir &amp; Hampers</option>
+              <option value="Pertanian, Hidroponik, Bibit & Tanaman Hias">Pertanian, Bibit &amp; Tanaman</option>
+              <option value="Perabot, Dekorasi & Perlengkapan Rumah">Perlengkapan &amp; Dekorasi Rumah</option>
+              <option value="Jasa, Laundry, Jahit & Layanan Rumah Tangga">Jasa &amp; Layanan Rumah Tangga</option>
+            </select>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-xs font-extrabold text-slate-800 mb-1">Tempat Tayang</label>
+              <select id="platform" class="w-full px-3 py-2.5 rounded-xl bg-white border-2 border-slate-300 text-xs font-bold text-slate-900">
+                <option value="TikTok & Instagram Reels (9:16)">TikTok / Reels</option>
+                <option value="WhatsApp Status & Facebook">Status WA / FB</option>
+                <option value="YouTube Shorts (9:16)">YouTube Shorts</option>
+                <option value="YouTube Mini Drama (16:9)">YouTube Mendatar</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-extrabold text-slate-800 mb-1">Gaya Cerita</label>
+              <select id="genre" class="w-full px-3 py-2.5 rounded-xl bg-white border-2 border-slate-300 text-xs font-bold text-slate-900">
+                <option value="Komedi Relatable Sehari-hari (Plot Twist)">Komedi Lucu</option>
+                <option value="Drama Keluarga Hangat & Menyentuh Hati">Drama Keluarga</option>
+                <option value="Konflik Tetangga / Rekan Kerja (Gengsi vs Solusi)">Obrolan Tetangga</option>
+                <option value="Storytelling Perjuangan Founder UMKM">Kisah Usaha</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Durasi -->
+          <div class="p-3 rounded-xl bg-white border border-slate-300 space-y-1.5">
+            <div class="flex items-center justify-between">
+              <label class="text-xs font-extrabold text-slate-800">Lama Durasi</label>
+              <span id="durationLabel" class="px-2.5 py-0.5 rounded-lg bg-[#ef4444] text-white text-xs font-extrabold">30 Detik (5 Adegan)</span>
+            </div>
+            <input id="durationSlider" type="range" min="0" max="7" value="2" oninput="updateDurationDisplay()" class="w-full h-2.5 accent-[#ef4444] cursor-pointer" />
+            <div class="flex justify-between text-[10px] font-bold text-slate-500">
+              <span>10 dtk</span><span>30 dtk</span><span>1 mnt</span><span>3 mnt</span><span>5 mnt</span><span>10 mnt</span>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-extrabold text-slate-800 mb-1">Keunggulan Produk &amp; Manfaatnya</label>
+            <textarea id="usp" rows="2" placeholder="Contoh: Angkat lemak & bau amis sekali usap, lembut di tangan, hemat..." class="w-full px-3.5 py-2.5 rounded-xl bg-white border-2 border-slate-300 text-sm font-medium text-slate-900 focus:border-red-500 focus:outline-none"></textarea>
+          </div>
+
+          <div>
+            <label class="block text-xs font-extrabold text-slate-800 mb-1">Promo &amp; Nomor WA Pesan</label>
+            <input id="cta" type="text" placeholder="Contoh: Rp 15.000/Liter • WA 0812-3456-7890" class="w-full px-3.5 py-2.5 rounded-xl bg-white border-2 border-slate-300 text-sm font-semibold text-slate-900 focus:border-red-500 focus:outline-none" />
+          </div>
+
+          <input type="hidden" id="visualStyle" value="Cinematic Realistic Indonesian Street/Home Lifestyle (Cocok untuk Veo 3, Kling AI, Runway Gen-3)" />
+
+          <button id="generateBtn" onclick="generateDramaScript()" class="w-full py-3.5 rounded-2xl bg-[#ef4444] hover:bg-red-600 text-white font-extrabold text-sm shadow-md transition">
+            ⚡ Buat Naskah &amp; Prompt Video
+          </button>
+        </div>
+
+        <!-- Loading -->
+        <div id="loadingState" class="hidden py-8 text-center space-y-2">
+          <div class="w-10 h-10 border-4 border-red-200 border-t-red-600 rounded-full animate-spin mx-auto"></div>
+          <p class="text-sm font-extrabold text-slate-800">Sedang Menulis Cerita Iklan...</p>
+        </div>
+
+        <!-- Hasil Naskah -->
+        <div id="scriptResult" class="hidden space-y-3">
+          <div class="flex items-center justify-between gap-2">
+            <span id="resBadge" class="px-2.5 py-1 rounded-full text-xs font-extrabold bg-red-100 text-red-900"></span>
+            <div id="outputActions" class="flex gap-1.5">
+              <button onclick="copyAllScript()" class="px-3 py-1.5 rounded-xl bg-slate-200 text-xs font-extrabold text-slate-900">📋 Salin</button>
+              <button onclick="downloadScriptTxt()" class="px-3 py-1.5 rounded-xl bg-emerald-600 text-white text-xs font-extrabold">⬇️ TXT</button>
+            </div>
+          </div>
+          <div class="p-3.5 rounded-2xl bg-red-50 border border-red-200 space-y-1">
+            <h3 id="resTitle" class="text-sm font-extrabold text-slate-900"></h3>
+            <p id="resSynopsis" class="text-xs text-slate-700 leading-relaxed"></p>
+          </div>
+          <div id="scenesContainer" class="space-y-3"></div>
+          <button onclick="switchTab('editor')" class="w-full py-3 rounded-2xl bg-[#65a30d] text-white text-xs font-extrabold shadow">
+            Lanjut Gabungkan Klip Video di HP →
+          </button>
+        </div>
       </div>
-      <div id="modalApiStatusInfo" class="p-3 rounded-xl bg-pink-100 border border-pink-400 text-sm font-bold text-stone-900">
-        Status: Mengecek sambungan Gemini API...
+
+      <!-- =========================================================
+           HALAMAN 3: CONTOH CEPAT SEMUA KATEGORI UMKM
+           ========================================================= -->
+      <div id="view-contoh" class="hidden space-y-4 pt-2">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-extrabold text-slate-900">💡 Contoh Cepat Produk UMKM</h2>
+          <button onclick="switchTab('beranda')" class="text-xs font-extrabold text-sky-700">← Beranda</button>
+        </div>
+        <p class="text-xs text-slate-600">Pilih kategori usaha Anda di bawah ini untuk mengisi contoh naskah &amp; teks iklan secara otomatis:</p>
+
+        <div class="grid grid-cols-1 gap-2.5">
+          <button onclick="applyPresetAndOpen('kuliner')" class="p-3.5 rounded-2xl bg-white border-2 border-red-200 hover:border-red-400 text-left flex items-center justify-between">
+            <div><div class="font-extrabold text-sm text-slate-900">🍜 Kuliner, Makanan &amp; Lauk Siap Saji</div><div class="text-xs text-slate-500">Sambal Cumi &amp; Ayam Ungkep Bu Rini</div></div>
+            <span class="text-xs font-extrabold text-red-600">Pakai →</span>
+          </button>
+          <button onclick="applyPresetAndOpen('kue')" class="p-3.5 rounded-2xl bg-white border-2 border-amber-200 hover:border-amber-400 text-left flex items-center justify-between">
+            <div><div class="font-extrabold text-sm text-slate-900">🍪 Kue, Roti &amp; Camilan Kering</div><div class="text-xs text-slate-500">Keripik Pisang Lumer &amp; Nastar Limo</div></div>
+            <span class="text-xs font-extrabold text-amber-600">Pakai →</span>
+          </button>
+          <button onclick="applyPresetAndOpen('herbal')" class="p-3.5 rounded-2xl bg-white border-2 border-orange-200 hover:border-orange-400 text-left flex items-center justify-between">
+            <div><div class="font-extrabold text-sm text-slate-900">🫚 Minuman, Kopi, Rempah &amp; Herbal</div><div class="text-xs text-slate-500">Jahe Merah &amp; Serai Gula Aren</div></div>
+            <span class="text-xs font-extrabold text-orange-600">Pakai →</span>
+          </button>
+          <button onclick="applyPresetAndOpen('sabun')" class="p-3.5 rounded-2xl bg-white border-2 border-lime-300 hover:border-lime-500 text-left flex items-center justify-between">
+            <div><div class="font-extrabold text-sm text-slate-900">🍋 Sabun Cuci Piring &amp; Pembersih</div><div class="text-xs text-slate-500">KinclongJeruk Sabun Cuci Piring UMKM</div></div>
+            <span class="text-xs font-extrabold text-lime-700">Pakai →</span>
+          </button>
+          <button onclick="applyPresetAndOpen('skincare')" class="p-3.5 rounded-2xl bg-white border-2 border-pink-200 hover:border-pink-400 text-left flex items-center justify-between">
+            <div><div class="font-extrabold text-sm text-slate-900">✨ Skincare &amp; Perawatan Tubuh</div><div class="text-xs text-slate-500">GlowNusa Serum &amp; Sabun Herbal</div></div>
+            <span class="text-xs font-extrabold text-pink-600">Pakai →</span>
+          </button>
+          <button onclick="applyPresetAndOpen('fashion')" class="p-3.5 rounded-2xl bg-white border-2 border-purple-200 hover:border-purple-400 text-left flex items-center justify-between">
+            <div><div class="font-extrabold text-sm text-slate-900">👗 Fashion, Busana &amp; Hijab</div><div class="text-xs text-slate-500">Khadijah Daily Crinkle &amp; Hijab Instan</div></div>
+            <span class="text-xs font-extrabold text-purple-600">Pakai →</span>
+          </button>
+          <button onclick="applyPresetAndOpen('kerajinan')" class="p-3.5 rounded-2xl bg-white border-2 border-teal-200 hover:border-teal-400 text-left flex items-center justify-between">
+            <div><div class="font-extrabold text-sm text-slate-900">🧺 Kerajinan, Souvenir &amp; Hampers</div><div class="text-xs text-slate-500">Anyaman &amp; Hampers Karya Limo</div></div>
+            <span class="text-xs font-extrabold text-teal-600">Pakai →</span>
+          </button>
+          <button onclick="applyPresetAndOpen('pertanian')" class="p-3.5 rounded-2xl bg-white border-2 border-emerald-200 hover:border-emerald-400 text-left flex items-center justify-between">
+            <div><div class="font-extrabold text-sm text-slate-900">🌱 Pertanian, Bibit &amp; Tanaman</div><div class="text-xs text-slate-500">Sayur Hidroponik &amp; Pupuk Organik</div></div>
+            <span class="text-xs font-extrabold text-emerald-600">Pakai →</span>
+          </button>
+          <button onclick="applyPresetAndOpen('jasa')" class="p-3.5 rounded-2xl bg-white border-2 border-sky-200 hover:border-sky-400 text-left flex items-center justify-between">
+            <div><div class="font-extrabold text-sm text-slate-900">🚚 Jasa &amp; Layanan Rumah Tangga</div><div class="text-xs text-slate-500">KilatClean Laundry &amp; Jahit Rumahan</div></div>
+            <span class="text-xs font-extrabold text-sky-600">Pakai →</span>
+          </button>
+        </div>
       </div>
-      <p class="text-sm text-stone-700 leading-relaxed">
-        Jika website sudah terhubung ke server Railway dengan <code class="px-1.5 py-0.5 rounded bg-pink-200 text-stone-900 font-bold">GEMINI_API_KEY</code>, kolom ini boleh dikosongkan.
-      </p>
-      <input id="manualApiKeyInput" type="password" placeholder="Tempel Gemini API Key (AIzaSy...)" class="w-full px-4 py-3 rounded-xl bg-white border-2 border-pink-300 text-base text-stone-900 focus:border-pink-600 focus:outline-none" />
-      <div class="flex justify-end gap-2.5 pt-1">
-        <button onclick="closeApiModal()" class="px-4 py-2.5 rounded-xl bg-stone-200 text-sm font-extrabold text-stone-800">Batal</button>
-        <button onclick="saveApiKey()" class="px-5 py-2.5 rounded-xl bg-pink-600 hover:bg-pink-500 text-white text-sm font-extrabold">Simpan Key</button>
+
+      <!-- =========================================================
+           HALAMAN 4: STUDIO GABUNG VIDEO RINGAN DI HP
+           ========================================================= -->
+      <div id="view-editor" class="hidden space-y-4 pt-2">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-extrabold text-slate-900">🎞️ Gabung Video Iklan HP</h2>
+          <button onclick="switchTab('beranda')" class="text-xs font-extrabold text-sky-700">← Beranda</button>
+        </div>
+
+        <!-- Tombol Upload Video -->
+        <label class="cursor-pointer w-full py-3.5 px-4 rounded-2xl bg-[#65a30d] hover:bg-lime-700 text-white font-extrabold text-sm shadow-md flex items-center justify-center gap-2 transition">
+          <span>+ Pilih Video dari Galeri HP</span>
+          <input id="videoUploadInput" type="file" accept="video/*" multiple onchange="handleVideoUpload(event)" class="hidden" />
+        </label>
+
+        <!-- Daftar Klip -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-extrabold text-slate-800">Daftar Video (<span id="clipCount">0</span> klip)</span>
+            <button onclick="clearAllClips()" class="text-xs font-bold text-rose-600">Hapus Semua</button>
+          </div>
+          <div id="clipListEmpty" class="p-4 rounded-2xl border-2 border-dashed border-lime-400 bg-lime-50/70 text-center text-xs font-semibold text-slate-700">
+            Belum ada video dipilih. Tekan tombol hijau di atas untuk memasukkan 2 atau lebih video.
+          </div>
+          <div id="clipListContainer" class="space-y-2.5"></div>
+        </div>
+
+        <!-- Pengaturan Tulisan & Animasi -->
+        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-[11px] font-extrabold text-slate-700 mb-1">Kecepatan HP</label>
+              <select id="qualityModeSelect" onchange="updateCanvasAspect()" class="w-full px-2.5 py-2 rounded-xl bg-white border border-emerald-400 text-xs font-bold text-slate-900">
+                <option value="ultra" selected>🚀 Super Ringan (270p)</option>
+                <option value="lite">⚡ Ringan (360p)</option>
+                <option value="medium">📱 Sedang (480p)</option>
+                <option value="hd">💻 Jernih (HD)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[11px] font-extrabold text-slate-700 mb-1">Bentuk Layar</label>
+              <select id="aspectRatioSelect" onchange="updateCanvasAspect()" class="w-full px-2.5 py-2 rounded-xl bg-white border border-slate-300 text-xs font-bold text-slate-900">
+                <option value="9:16">Tegak (TikTok/WA)</option>
+                <option value="16:9">Mendatar (YouTube)</option>
+                <option value="1:1">Kotak (1:1)</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-extrabold text-slate-800 mb-1">Nama Produk (Mengambang)</label>
+            <input id="brandWatermarkInput" type="text" oninput="renderSinglePreviewFrame()" placeholder="Contoh: Sabun Cuci Piring Jeruk" class="w-full px-3 py-2.5 rounded-xl bg-white border border-slate-300 text-sm font-semibold text-slate-900" />
+          </div>
+
+          <div>
+            <label class="block text-xs font-extrabold text-slate-800 mb-1">Harga / Promo (Kedip Lambat)</label>
+            <input id="promoBadgeInput" type="text" oninput="renderSinglePreviewFrame()" placeholder="Contoh: Rp 15.000 / Liter" class="w-full px-3 py-2.5 rounded-xl bg-white border border-slate-300 text-sm font-semibold text-slate-900" />
+          </div>
+
+          <div>
+            <label class="block text-xs font-extrabold text-slate-800 mb-1">Nomor WA (Teks Berjalan Kuning)</label>
+            <input id="ctaBannerInput" type="text" oninput="renderSinglePreviewFrame()" placeholder="Contoh: Order WA: 0812-3456-7890" class="w-full px-3 py-2.5 rounded-xl bg-white border border-slate-300 text-sm font-semibold text-slate-900" />
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div class="p-2.5 rounded-xl bg-white border border-slate-200 space-y-1">
+              <div class="flex justify-between items-center">
+                <span class="text-[11px] font-extrabold text-slate-800">Logo (Mutar)</span>
+                <button type="button" onclick="clearLogo()" id="clearLogoBtn" class="hidden text-[10px] font-bold text-rose-600">Hapus</button>
+              </div>
+              <input id="logoUploadInput" type="file" accept="image/*" onchange="handleLogoUpload(event)" class="w-full text-[11px] text-slate-600" />
+            </div>
+            <div class="p-2.5 rounded-xl bg-white border border-slate-200 space-y-1">
+              <div class="flex justify-between items-center">
+                <span class="text-[11px] font-extrabold text-slate-800">Foto Produk</span>
+                <button type="button" onclick="clearProductImg()" id="clearProductImgBtn" class="hidden text-[10px] font-bold text-rose-600">Hapus</button>
+              </div>
+              <input id="productImgUploadInput" type="file" accept="image/*" onchange="handleProductImgUpload(event)" class="w-full text-[11px] text-slate-600" />
+            </div>
+          </div>
+
+          <div class="p-2.5 rounded-xl bg-white border border-slate-200 space-y-1">
+            <span class="block text-[11px] font-extrabold text-slate-800">Musik Latar Tambahan (Opsional)</span>
+            <input id="bgmUploadInput" type="file" accept="audio/*" onchange="handleBgmUpload(event)" class="w-full text-[11px] text-slate-600" />
+          </div>
+          <input type="hidden" id="transitionSelect" value="cut" />
+        </div>
+
+        <!-- Layar Pratinjau Kanvas -->
+        <div class="bg-slate-900 rounded-2xl p-3 flex flex-col items-center space-y-2">
+          <div class="w-full flex justify-between items-center text-white text-xs px-1">
+            <span class="font-bold">Layar Contoh Video</span>
+            <span id="editorStatusText" class="px-2 py-0.5 rounded-full bg-white/15 font-extrabold">Siap</span>
+          </div>
+          <canvas id="videoEditorCanvas" width="270" height="480" class="max-h-[300px] w-auto rounded-xl bg-stone-800 border border-slate-700"></canvas>
+        </div>
+
+        <!-- Progress Bar -->
+        <div id="exportProgressWrap" class="hidden space-y-1 bg-amber-50 p-3 rounded-xl border border-amber-300">
+          <div class="flex justify-between text-xs font-extrabold text-slate-900">
+            <span>Menggabung video...</span>
+            <span id="exportProgressPct">0%</span>
+          </div>
+          <div class="w-full h-2.5 bg-amber-200 rounded-full overflow-hidden">
+            <div id="exportProgressBar" class="h-full bg-emerald-600 transition-all" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <button id="previewMergedBtn" onclick="previewMergedVideo()" class="py-3 rounded-xl bg-slate-200 hover:bg-slate-300 text-xs font-extrabold text-slate-900">
+            ▶ Putar Contoh
+          </button>
+          <button id="exportMergedBtn" onclick="exportMergedVideo()" class="py-3 rounded-xl bg-[#0284c7] hover:bg-sky-700 text-xs font-extrabold text-white shadow">
+            💾 Gabung &amp; Simpan
+          </button>
+        </div>
+
+        <button id="stopPlaybackBtn" onclick="stopEditorPlayback()" class="hidden w-full py-2.5 rounded-xl bg-rose-600 text-white text-xs font-extrabold">
+          ⏹ Berhenti
+        </button>
+
+        <!-- Hasil Video Gabungan -->
+        <div id="downloadResultBox" class="hidden p-3.5 rounded-2xl bg-emerald-50 border-2 border-emerald-500 space-y-2.5">
+          <div class="flex items-center justify-between gap-2">
+            <div>
+              <p class="font-extrabold text-xs text-emerald-950">✅ Video Gabungan Sudah Jadi!</p>
+              <p id="finalFileInfo" class="text-[11px] text-emerald-800">Siap disimpan ke HP.</p>
+            </div>
+            <button type="button" onclick="triggerMobileSave()" class="px-3.5 py-2 rounded-xl bg-emerald-600 text-white font-extrabold text-xs">
+              ⬇️ Simpan
+            </button>
+          </div>
+          <video id="finalResultVideoPlayer" controls playsinline webkit-playsinline class="w-full max-h-[240px] rounded-xl bg-black"></video>
+        </div>
       </div>
-    </div>
+
+      <!-- =========================================================
+           HALAMAN 5: PROFIL USAHA & PENGATURAN API KEY
+           ========================================================= -->
+      <div id="view-profil" class="hidden space-y-4 pt-2">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-extrabold text-slate-900">👤 Profil &amp; Sambungan API</h2>
+          <button onclick="switchTab('beranda')" class="text-xs font-extrabold text-sky-700">← Beranda</button>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-sky-50 border-2 border-sky-200 space-y-3">
+          <label class="block text-xs font-extrabold text-slate-800">Nama Pemilik / Usaha UMKM</label>
+          <input id="profileOwnerInput" type="text" value="Pelaku UMKM Depok" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm font-bold text-slate-900" />
+          <button onclick="saveOwnerProfile()" class="w-full py-2.5 rounded-xl bg-[#0284c7] text-white text-xs font-extrabold">
+            Simpan Nama Tampilan
+          </button>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-white border-2 border-slate-200 space-y-3">
+          <div class="font-extrabold text-sm text-slate-900">Status Sambungan Gemini AI</div>
+          <p class="text-xs text-slate-600">Klik tombol di bawah untuk mengecek atau memasukkan Gemini API Key Anda.</p>
+          <button onclick="openApiModal()" class="w-full py-3 rounded-xl bg-slate-900 text-white text-xs font-extrabold">
+            🔑 Atur / Cek Gemini API Key
+          </button>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- BOTTOM NAVIGATION BAR (5 Ikon Warna-Warni Persis Seperti Mockup) -->
+    <nav class="border-t border-slate-200 bg-white px-3 pt-2 pb-4 grid grid-cols-5 items-center sticky bottom-0 z-30">
+      <!-- 1. Beranda (Biru) -->
+      <button onclick="switchTab('beranda')" id="nav-beranda" class="relative flex flex-col items-center justify-center py-1 text-[#0284c7]">
+        <span id="bar-beranda" class="absolute -top-2 w-10 h-1 rounded-full bg-[#0284c7]"></span>
+        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 3l9 8h-3v9h-5v-6h-2v6H6v-9H3l9-8z" /></svg>
+        <span class="text-[10px] font-extrabold mt-0.5">Beranda</span>
+      </button>
+
+      <!-- 2. Naskah Drama (Hijau) -->
+      <button onclick="switchTab('naskah')" id="nav-naskah" class="relative flex flex-col items-center justify-center py-1 text-[#65a30d] opacity-75">
+        <span id="bar-naskah" class="hidden absolute -top-2 w-10 h-1 rounded-full bg-[#65a30d]"></span>
+        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M4 4h11a2 2 0 012 2v6a2 2 0 01-2 2H8l-4 4v-4H4a2 2 0 01-2-2V6a2 2 0 012-2z" /></svg>
+        <span class="text-[10px] font-extrabold mt-0.5">Naskah</span>
+      </button>
+
+      <!-- 3. Contoh UMKM (Kuning Emas) -->
+      <button onclick="switchTab('contoh')" id="nav-contoh" class="relative flex flex-col items-center justify-center py-1 text-[#eab308] opacity-75">
+        <span id="bar-contoh" class="hidden absolute -top-2 w-10 h-1 rounded-full bg-[#eab308]"></span>
+        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M4 4h16l1 5a3 3 0 01-2 2.82V20a1 1 0 01-1 1h-4v-6h-4v6H6a1 1 0 01-1-1v-8.18A3 3 0 013 9l1-5z" /></svg>
+        <span class="text-[10px] font-extrabold mt-0.5">Contoh</span>
+      </button>
+
+      <!-- 4. Gabung Video (Oranye) -->
+      <button onclick="switchTab('editor')" id="nav-editor" class="relative flex flex-col items-center justify-center py-1 text-[#f97316] opacity-75">
+        <span id="bar-editor" class="hidden absolute -top-2 w-10 h-1 rounded-full bg-[#f97316]"></span>
+        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+        <span class="text-[10px] font-extrabold mt-0.5">Video</span>
+      </button>
+
+      <!-- 5. Profil & API (Merah) -->
+      <button onclick="switchTab('profil')" id="nav-profil" class="relative flex flex-col items-center justify-center py-1 text-[#ef4444] opacity-75">
+        <span id="bar-profil" class="hidden absolute -top-2 w-10 h-1 rounded-full bg-[#ef4444]"></span>
+        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 4a3.5 3.5 0 110 7 3.5 3.5 0 010-7zm0 14a8 8 0 01-6.32-3.1C6.54 15.2 9.12 14.5 12 14.5s5.46.7 6.32 2.4A8 8 0 0112 20z" /></svg>
+        <span class="text-[10px] font-extrabold mt-0.5">Profil</span>
+      </button>
+    </nav>
+
   </div>
 
   <script>
@@ -467,6 +587,7 @@
     ];
 
     let currentGeneratedData = null;
+    let isServerGeminiConnected = false;
 
     function showToast(msg) {
       const box = document.getElementById('toastNotification');
@@ -476,14 +597,38 @@
       clearTimeout(window.__toastTimer);
       window.__toastTimer = setTimeout(() => {
         box.classList.add('hidden');
-      }, 3200);
+      }, 3000);
+    }
+
+    function toggleDrawer(open) {
+      document.getElementById('sideDrawer').classList.toggle('hidden', !open);
+    }
+
+    function switchTab(tab) {
+      ['beranda', 'naskah', 'contoh', 'editor', 'profil'].forEach((t) => {
+        document.getElementById(`view-${t}`).classList.toggle('hidden', t !== tab);
+        const bar = document.getElementById(`bar-${t}`);
+        const nav = document.getElementById(`nav-${t}`);
+        if (bar) bar.classList.toggle('hidden', t !== tab);
+        if (nav) {
+          nav.classList.toggle('opacity-100', t === tab);
+          nav.classList.toggle('opacity-75', t !== tab);
+        }
+      });
+      if (tab === 'editor') {
+        renderSinglePreviewFrame();
+      }
+    }
+
+    function saveOwnerProfile() {
+      const val = document.getElementById('profileOwnerInput').value.trim() || 'Pelaku UMKM Depok';
+      document.getElementById('greetingName').innerHTML = `Selamat Datang,<br />${val}!`;
+      showToast('Nama profil berhasil disimpan!');
     }
 
     // ==========================================
-    // 2. API KEY MODAL & LIVE CONNECTION STATUS
+    // API KEY & LIVE CONNECTION STATUS
     // ==========================================
-    let isServerGeminiConnected = false;
-
     function updateApiConnectionBadge() {
       const badge = document.getElementById('apiStatusBadge');
       const dot = document.getElementById('apiStatusDot');
@@ -492,21 +637,21 @@
       const manualKey = (localStorage.getItem('gemini_api_key_umkm') || '').trim();
 
       if (manualKey || isServerGeminiConnected) {
-        if (badge) badge.className = 'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs sm:text-sm font-extrabold bg-emerald-100 text-emerald-950 border-2 border-emerald-500 shadow-sm';
-        if (dot) dot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-600 animate-pulse';
-        if (text) text.textContent = manualKey ? '✓ API Key Tersambung' : '✓ Server AI Tersambung';
+        if (badge) badge.className = 'mt-1 inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full text-[11px] font-extrabold bg-emerald-100 text-emerald-950 border border-emerald-500';
+        if (dot) dot.className = 'w-2 h-2 rounded-full bg-emerald-600 animate-pulse';
+        if (text) text.textContent = '✓ API Aktif';
         if (modalInfo) {
-          modalInfo.className = 'p-3 rounded-xl bg-emerald-100 border-2 border-emerald-500 text-sm font-extrabold text-emerald-950';
+          modalInfo.className = 'p-3 rounded-xl bg-emerald-100 border border-emerald-500 text-xs font-extrabold text-emerald-950';
           modalInfo.textContent = manualKey
             ? '✅ Tersambung menggunakan API Key pribadi Anda.'
             : '✅ Tersambung otomatis ke Server Gemini API (Railway).';
         }
       } else {
-        if (badge) badge.className = 'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs sm:text-sm font-extrabold bg-rose-100 text-rose-900 border border-rose-400';
-        if (dot) dot.className = 'w-2.5 h-2.5 rounded-full bg-rose-500';
-        if (text) text.textContent = 'API Belum Tersambung';
+        if (badge) badge.className = 'mt-1 inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full text-[11px] font-extrabold bg-rose-100 text-rose-900 border border-rose-400';
+        if (dot) dot.className = 'w-2 h-2 rounded-full bg-rose-500';
+        if (text) text.textContent = 'Atur API';
         if (modalInfo) {
-          modalInfo.className = 'p-3 rounded-xl bg-rose-100 border border-rose-400 text-sm font-bold text-rose-950';
+          modalInfo.className = 'p-3 rounded-xl bg-rose-100 border border-rose-400 text-xs font-bold text-rose-950';
           modalInfo.textContent = '⚠️ Belum tersambung ke Gemini API. Tempelkan API Key Anda di bawah ini.';
         }
       }
@@ -542,11 +687,8 @@
     }
     function saveApiKey() {
       const val = document.getElementById('manualApiKeyInput').value.trim();
-      if (val) {
-        localStorage.setItem('gemini_api_key_umkm', val);
-      } else {
-        localStorage.removeItem('gemini_api_key_umkm');
-      }
+      if (val) localStorage.setItem('gemini_api_key_umkm', val);
+      else localStorage.removeItem('gemini_api_key_umkm');
       updateApiConnectionBadge();
       closeApiModal();
       showToast(val ? '✅ API Key tersimpan & tersambung!' : 'API Key dihapus.');
@@ -556,6 +698,11 @@
       const idx = parseInt(document.getElementById('durationSlider').value, 10);
       const item = DURATION_STEPS[idx] || DURATION_STEPS[2];
       document.getElementById('durationLabel').textContent = `${item.label} (${item.scenes} Adegan)`;
+    }
+
+    function applyPresetAndOpen(type) {
+      applyPreset(type);
+      switchTab('naskah');
     }
 
     function applyPreset(type) {
@@ -634,12 +781,11 @@
 
       document.getElementById('brandWatermarkInput').value = p.name;
       document.getElementById('ctaBannerInput').value = p.cta;
-      renderSinglePreviewFrame();
-      showToast(`Contoh "${p.name}" sudah diisikan!`);
+      showToast(`Contoh "${p.name}" siap dibuatkan naskahnya!`);
     }
 
     // ==========================================
-    // 3. GENERATE DRAMA SCRIPT & AI PROMPTS
+    // GENERATE DRAMA SCRIPT & AI PROMPTS
     // ==========================================
     async function generateDramaScript() {
       const productName = document.getElementById('productName').value.trim() || 'Produk UMKM Lokal';
@@ -649,16 +795,13 @@
       const durObj = DURATION_STEPS[durIdx] || DURATION_STEPS[2];
       const usp = document.getElementById('usp').value.trim() || 'Produk berkualitas tinggi buatan lokal dengan harga ramah di kantong.';
       const genre = document.getElementById('genre').value;
-      const cta = document.getElementById('cta').value.trim() || 'Pesan sekarang lewat WhatsApp atau klik keranjang belanja!';
+      const cta = document.getElementById('cta').value.trim() || 'Pesan sekarang lewat WhatsApp!';
       const visualStyle = document.getElementById('visualStyle').value;
 
       document.getElementById('brandWatermarkInput').value = productName;
       document.getElementById('ctaBannerInput').value = cta;
-      renderSinglePreviewFrame();
 
-      document.getElementById('emptyState').classList.add('hidden');
       document.getElementById('scriptResult').classList.add('hidden');
-      document.getElementById('outputActions').classList.add('hidden');
       document.getElementById('loadingState').classList.remove('hidden');
 
       const systemPrompt = `Anda adalah sutradara iklan komersial dan penulis skenario drama pendek viral spesialis UMKM Indonesia.
@@ -677,7 +820,7 @@ Struktur JSON wajib:
       "visualAction": "Deskripsi aksi karakter dalam bahasa Indonesia",
       "dialogue": "Dialog/Voiceover karakter dalam bahasa Indonesia",
       "onScreenText": "Teks singkat yang muncul di layar",
-      "aiVideoPrompt": "Detailed English prompt for AI video generators (Veo 3, Kling, Runway) describing subject, Indonesian setting, camera movement, lighting, expression, and aspect ratio"
+      "aiVideoPrompt": "Detailed English prompt for AI video generators (Veo 3, Kling, Runway)"
     }
   ]
 }`;
@@ -725,13 +868,11 @@ Struktur JSON wajib:
           }
         }
 
-        if (!data || !Array.isArray(data.scenes)) {
-          throw new Error('Fallback lokal');
-        }
-        renderScriptResult(data, durObj.label, platform);
+        if (!data || !Array.isArray(data.scenes)) throw new Error('Fallback');
+        renderScriptResult(data, durObj.label);
       } catch (err) {
         const fallbackData = buildFallbackDrama({ productName, category, platform, durObj, usp, genre, cta, visualStyle });
-        renderScriptResult(fallbackData, durObj.label, platform);
+        renderScriptResult(fallbackData, durObj.label);
       }
     }
 
@@ -771,30 +912,28 @@ Struktur JSON wajib:
           sceneNumber: i + 1,
           timeRange: `${fmt(start)} - ${fmt(end)}`,
           durationSec: Math.max(2, end - start),
-          setting: `${stage} — Rumah/Kantor Indonesia`,
+          setting: `${stage} — Rumah Indonesia`,
           visualAction: action,
           dialogue,
           onScreenText: screenText,
-          aiVideoPrompt: `Cinematic ${visualStyle}, Indonesian young adult actor in Indonesian home setting, ${stage}, showcasing "${productName}" (${category}), natural lighting, 4k, ${platform.includes('16:9') ? '16:9 widescreen' : '9:16 vertical'}`
+          aiVideoPrompt: `Cinematic ${visualStyle}, Indonesian actor in Indonesian home setting, ${stage}, showcasing "${productName}" (${category}), natural lighting, 4k, ${platform.includes('16:9') ? '16:9' : '9:16'}`
         });
       }
 
       return {
-        title: `Drama ${genre.split(' ')[0]}: Rahasia di Balik ${productName}`,
-        hook: `Konflik sehari-hari yang langsung diselesaikan oleh ${productName}.`,
-        synopsis: `Kisah drama berdurasi ${durObj.label} tentang masalah pelanggan (${usp}) hingga menemukan solusi bersama ${productName}.`,
+        title: `Drama ${genre.split(' ')[0]}: Rahasia ${productName}`,
+        hook: `Konflik sehari-hari yang diselesaikan oleh ${productName}.`,
+        synopsis: `Kisah drama ${durObj.label} tentang masalah pelanggan (${usp}) hingga menemukan solusi bersama ${productName}.`,
         scenes
       };
     }
 
-    function renderScriptResult(data, durationLabel, platform) {
+    function renderScriptResult(data, durationLabel) {
       currentGeneratedData = data;
       document.getElementById('loadingState').classList.add('hidden');
       document.getElementById('scriptResult').classList.remove('hidden');
-      document.getElementById('outputActions').classList.remove('hidden');
 
       document.getElementById('resBadge').textContent = `${durationLabel} • ${data.scenes.length} Adegan`;
-      document.getElementById('resHookTag').textContent = platform;
       document.getElementById('resTitle').textContent = data.title;
       document.getElementById('resSynopsis').textContent = data.synopsis;
 
@@ -803,23 +942,17 @@ Struktur JSON wajib:
 
       data.scenes.forEach((sc, idx) => {
         const card = document.createElement('div');
-        card.className = 'p-4 rounded-2xl bg-white border-2 border-pink-200 space-y-2.5 shadow-sm';
+        card.className = 'p-3.5 rounded-2xl bg-white border border-slate-200 space-y-2 shadow-xs';
         card.innerHTML = `
-          <div class="flex flex-wrap items-center justify-between gap-2">
-            <span class="text-sm sm:text-base font-extrabold text-pink-800">ADEGAN ${sc.sceneNumber} (${sc.timeRange})</span>
-            <span class="text-xs sm:text-sm font-semibold text-stone-600">${sc.setting || ''}</span>
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-xs font-extrabold text-red-600">ADEGAN ${sc.sceneNumber} (${sc.timeRange})</span>
+            <button onclick="copyScenePrompt(${idx})" id="copyPromptBtn-${idx}" class="px-2.5 py-1 rounded-lg bg-slate-100 text-[11px] font-extrabold text-slate-800">Salin Prompt</button>
           </div>
-          <p class="text-sm sm:text-base text-stone-800 leading-relaxed"><strong class="text-stone-950">Gambar/Aksi:</strong> ${sc.visualAction}</p>
-          <p class="text-sm sm:text-base font-semibold text-emerald-950 bg-emerald-100 border border-emerald-400 rounded-xl px-3.5 py-2.5 leading-relaxed">
-            <strong>Ucapan / Dialog:</strong> ${sc.dialogue}
+          <p class="text-xs text-slate-700 leading-relaxed"><strong>Aksi:</strong> ${sc.visualAction}</p>
+          <p class="text-xs font-semibold text-emerald-950 bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2">
+            <strong>Dialog:</strong> ${sc.dialogue}
           </p>
-          <div class="pt-1">
-            <div class="flex items-center justify-between mb-1.5">
-              <span class="text-xs font-extrabold uppercase text-stone-700">Prompt Video AI</span>
-              <button onclick="copyScenePrompt(${idx})" id="copyPromptBtn-${idx}" class="px-3 py-1 rounded-lg bg-pink-200 hover:bg-pink-300 text-xs sm:text-sm font-extrabold text-stone-900">Salin Prompt</button>
-            </div>
-            <div class="p-3 rounded-xl bg-pink-50/80 border border-pink-300 text-xs sm:text-sm text-stone-800 font-mono select-all leading-relaxed">${sc.aiVideoPrompt}</div>
-          </div>
+          <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-[11px] text-slate-700 font-mono select-all">${sc.aiVideoPrompt}</div>
         `;
         container.appendChild(card);
       });
@@ -839,8 +972,7 @@ Struktur JSON wajib:
       if (!currentGeneratedData) return '';
       let txt = `JUDUL: ${currentGeneratedData.title}\nSINOPSIS: ${currentGeneratedData.synopsis}\n\n`;
       currentGeneratedData.scenes.forEach((sc) => {
-        txt += `=== ADEGAN ${sc.sceneNumber} (${sc.timeRange}) ===\n`;
-        txt += `Visual: ${sc.visualAction}\nDialog: ${sc.dialogue}\nPrompt: ${sc.aiVideoPrompt}\n\n`;
+        txt += `=== ADEGAN ${sc.sceneNumber} (${sc.timeRange}) ===\nVisual: ${sc.visualAction}\nDialog: ${sc.dialogue}\nPrompt: ${sc.aiVideoPrompt}\n\n`;
       });
       return txt;
     }
@@ -849,7 +981,7 @@ Struktur JSON wajib:
       const txt = formatFullScriptText();
       if (!txt) return;
       navigator.clipboard?.writeText(txt);
-      showToast('Seluruh naskah & prompt berhasil disalin!');
+      showToast('Seluruh naskah & prompt tersalin!');
     }
 
     function downloadScriptTxt() {
@@ -859,13 +991,13 @@ Struktur JSON wajib:
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'naskah_drama_iklan_umkm.txt';
+      a.download = 'naskah_drama_umkm.txt';
       a.click();
       URL.revokeObjectURL(url);
     }
 
     // ==========================================
-    // 4. LIGHTWEIGHT MOBILE-OPTIMIZED VIDEO MERGER
+    // LIGHTWEIGHT MOBILE VIDEO MERGER
     // ==========================================
     let uploadedClips = [];
     let logoImageObj = null;
@@ -915,7 +1047,7 @@ Struktur JSON wajib:
       const files = Array.from(event.target.files || []);
       if (!files.length) return;
 
-      document.getElementById('editorStatusText').textContent = 'Memuat video...';
+      document.getElementById('editorStatusText').textContent = 'Memuat...';
       for (const file of files) {
         const url = URL.createObjectURL(file);
         const meta = await extractVideoMetadata(url);
@@ -935,7 +1067,7 @@ Struktur JSON wajib:
       document.getElementById('editorStatusText').textContent = 'Siap';
       renderClipList();
       renderSinglePreviewFrame();
-      showToast(`${files.length} video berhasil ditambahkan.`);
+      showToast(`${files.length} video siap digabung!`);
     };
 
     function extractVideoMetadata(url) {
@@ -947,7 +1079,6 @@ Struktur JSON wajib:
         tempVid.preload = 'metadata';
 
         const timeout = setTimeout(() => resolve({ duration: 5, thumb: '' }), 3000);
-
         tempVid.onloadedmetadata = () => {
           const dur = Number.isFinite(tempVid.duration) && tempVid.duration > 0 ? tempVid.duration : 5;
           tempVid.currentTime = Math.min(0.1, dur / 3);
@@ -956,10 +1087,9 @@ Struktur JSON wajib:
           clearTimeout(timeout);
           try {
             const c = document.createElement('canvas');
-            c.width = 72;
-            c.height = 72;
-            const cx = c.getContext('2d');
-            cx.drawImage(tempVid, 0, 0, 72, 72);
+            c.width = 64;
+            c.height = 64;
+            c.getContext('2d').drawImage(tempVid, 0, 0, 64, 64);
             const dur = Number.isFinite(tempVid.duration) && tempVid.duration > 0 ? tempVid.duration : 5;
             resolve({ duration: dur, thumb: c.toDataURL('image/jpeg', 0.5) });
           } catch (_) {
@@ -988,33 +1118,24 @@ Struktur JSON wajib:
 
       uploadedClips.forEach((clip, index) => {
         const row = document.createElement('div');
-        row.className = 'p-3.5 rounded-2xl bg-white border-2 border-pink-300 flex gap-3 items-center shadow-sm';
+        row.className = 'p-3 rounded-2xl bg-white border border-slate-200 flex gap-2.5 items-center shadow-xs';
         row.innerHTML = `
-          <div class="w-14 h-14 rounded-xl bg-pink-100 border border-pink-300 overflow-hidden shrink-0 flex items-center justify-center">
-            ${clip.thumbDataUrl ? `<img src="${clip.thumbDataUrl}" class="w-full h-full object-cover" />` : `<span class="text-sm font-extrabold text-stone-700">#${index + 1}</span>`}
+          <div class="w-12 h-12 rounded-xl bg-slate-100 overflow-hidden shrink-0 flex items-center justify-center">
+            ${clip.thumbDataUrl ? `<img src="${clip.thumbDataUrl}" class="w-full h-full object-cover" />` : `<span class="text-xs font-extrabold">#${index + 1}</span>`}
           </div>
-          <div class="flex-1 min-w-0 space-y-2">
-            <div class="flex items-center justify-between gap-1.5">
-              <span class="text-sm sm:text-base font-extrabold text-stone-900 truncate">#${index + 1} ${clip.name}</span>
-              <div class="flex items-center gap-1.5 shrink-0">
-                <button onclick="moveClip(${index}, -1)" ${index === 0 ? 'disabled' : ''} class="px-2.5 py-1 rounded-lg bg-pink-200 disabled:opacity-30 text-sm font-extrabold text-stone-900">↑</button>
-                <button onclick="moveClip(${index}, 1)" ${index === uploadedClips.length - 1 ? 'disabled' : ''} class="px-2.5 py-1 rounded-lg bg-pink-200 disabled:opacity-30 text-sm font-extrabold text-stone-900">↓</button>
-                <button onclick="removeClip(${index})" class="px-2.5 py-1 rounded-lg bg-rose-100 text-sm font-extrabold text-rose-700 border border-rose-300">✕</button>
+          <div class="flex-1 min-w-0 space-y-1.5">
+            <div class="flex items-center justify-between gap-1">
+              <span class="text-xs font-extrabold text-slate-900 truncate">#${index + 1} ${clip.name}</span>
+              <div class="flex items-center gap-1 shrink-0">
+                <button onclick="moveClip(${index}, -1)" ${index === 0 ? 'disabled' : ''} class="px-2 py-0.5 rounded bg-slate-100 disabled:opacity-30 text-xs font-bold">↑</button>
+                <button onclick="moveClip(${index}, 1)" ${index === uploadedClips.length - 1 ? 'disabled' : ''} class="px-2 py-0.5 rounded bg-slate-100 disabled:opacity-30 text-xs font-bold">↓</button>
+                <button onclick="removeClip(${index})" class="px-2 py-0.5 rounded bg-rose-50 text-xs font-bold text-rose-600">✕</button>
               </div>
             </div>
-            <div class="grid grid-cols-3 gap-2">
-              <div>
-                <label class="block text-xs font-bold text-stone-700">Mulai (dtk)</label>
-                <input type="number" step="0.1" min="0" max="${clip.duration}" value="${clip.startTime}" onchange="updateClipField(${index}, 'startTime', parseFloat(this.value))" class="w-full px-2 py-1.5 rounded-lg bg-pink-50 border border-pink-300 text-sm font-bold text-stone-900" />
-              </div>
-              <div>
-                <label class="block text-xs font-bold text-stone-700">Selesai (dtk)</label>
-                <input type="number" step="0.1" min="0.2" max="${clip.duration}" value="${clip.endTime}" onchange="updateClipField(${index}, 'endTime', parseFloat(this.value))" class="w-full px-2 py-1.5 rounded-lg bg-pink-50 border border-pink-300 text-sm font-bold text-stone-900" />
-              </div>
-              <div>
-                <label class="block text-xs font-bold text-stone-700">Teks Berjalan</label>
-                <input type="text" value="${clip.subtitle.replace(/"/g, '&quot;')}" oninput="updateClipField(${index}, 'subtitle', this.value)" placeholder="Dialog..." class="w-full px-2 py-1.5 rounded-lg bg-pink-50 border border-pink-300 text-sm font-semibold text-stone-900" />
-              </div>
+            <div class="grid grid-cols-3 gap-1.5">
+              <input type="number" step="0.1" min="0" max="${clip.duration}" value="${clip.startTime}" onchange="updateClipField(${index}, 'startTime', parseFloat(this.value))" title="Mulai" class="w-full px-2 py-1 rounded-lg bg-slate-50 border border-slate-300 text-xs font-bold" />
+              <input type="number" step="0.1" min="0.2" max="${clip.duration}" value="${clip.endTime}" onchange="updateClipField(${index}, 'endTime', parseFloat(this.value))" title="Selesai" class="w-full px-2 py-1 rounded-lg bg-slate-50 border border-slate-300 text-xs font-bold" />
+              <input type="text" value="${clip.subtitle.replace(/"/g, '&quot;')}" oninput="updateClipField(${index}, 'subtitle', this.value)" placeholder="Teks dialog..." class="w-full px-2 py-1 rounded-lg bg-slate-50 border border-slate-300 text-xs font-semibold" />
             </div>
           </div>
         `;
@@ -1027,7 +1148,6 @@ Struktur JSON wajib:
       uploadedClips[index][field] = value;
       renderSinglePreviewFrame();
     };
-
     window.moveClip = function moveClip(index, dir) {
       const target = index + dir;
       if (target < 0 || target >= uploadedClips.length) return;
@@ -1037,20 +1157,14 @@ Struktur JSON wajib:
       renderClipList();
       renderSinglePreviewFrame();
     };
-
     window.removeClip = function removeClip(index) {
-      if (uploadedClips[index]?.url) {
-        try { URL.revokeObjectURL(uploadedClips[index].url); } catch (_) {}
-      }
+      if (uploadedClips[index]?.url) try { URL.revokeObjectURL(uploadedClips[index].url); } catch (_) {}
       uploadedClips.splice(index, 1);
       renderClipList();
       renderSinglePreviewFrame();
     };
-
     window.clearAllClips = function clearAllClips() {
-      uploadedClips.forEach((c) => {
-        try { URL.revokeObjectURL(c.url); } catch (_) {}
-      });
+      uploadedClips.forEach((c) => { try { URL.revokeObjectURL(c.url); } catch (_) {} });
       uploadedClips = [];
       renderClipList();
       renderSinglePreviewFrame();
@@ -1067,7 +1181,6 @@ Struktur JSON wajib:
       };
       img.src = URL.createObjectURL(file);
     };
-
     window.clearLogo = function clearLogo() {
       logoImageObj = null;
       document.getElementById('logoUploadInput').value = '';
@@ -1086,7 +1199,6 @@ Struktur JSON wajib:
       };
       img.src = URL.createObjectURL(file);
     };
-
     window.clearProductImg = function clearProductImg() {
       productImageObj = null;
       document.getElementById('productImgUploadInput').value = '';
@@ -1098,7 +1210,7 @@ Struktur JSON wajib:
       const file = event.target.files?.[0];
       if (!file) return;
       bgmAudioUrl = URL.createObjectURL(file);
-      showToast('Musik latar siap digabung.');
+      showToast('Musik latar siap digabung!');
     };
 
     function drawRoundRect(ctx, x, y, width, height, radius) {
@@ -1112,21 +1224,14 @@ Struktur JSON wajib:
       ctx.closePath();
     }
 
-    function drawVideoCover(ctx, videoEl, cw, ch, offsetX = 0, alpha = 1) {
+    function drawVideoCover(ctx, videoEl, cw, ch) {
       if (!videoEl || videoEl.readyState < 2) return;
-      ctx.save();
-      if (alpha < 1) ctx.globalAlpha = alpha;
-
       const vw = videoEl.videoWidth || cw;
       const vh = videoEl.videoHeight || ch;
       const scale = Math.max(cw / vw, ch / vh);
       const dw = vw * scale;
       const dh = vh * scale;
-      const dx = (cw - dw) / 2 + offsetX;
-      const dy = (ch - dh) / 2;
-
-      ctx.drawImage(videoEl, dx, dy, dw, dh);
-      ctx.restore();
+      ctx.drawImage(videoEl, (cw - dw) / 2, (ch - dh) / 2, dw, dh);
     }
 
     function drawUmkmOverlays(ctx, cw, ch, subtitleText = '', elapsedSec = 0) {
@@ -1136,7 +1241,6 @@ Struktur JSON wajib:
 
       const scaleFactor = cw / 360;
       const margin = Math.round(10 * scaleFactor);
-
       const floatY = Math.sin(elapsedSec * 2.1) * (3.2 * scaleFactor);
       const floatTilt = Math.sin(elapsedSec * 1.5) * 0.015;
 
@@ -1294,7 +1398,7 @@ Struktur JSON wajib:
         ctx.restore();
       }
 
-      // 5. TEKS DIALOG PRODUK (Running text kuning cerah tanpa latar • kiri ke kanan berlawanan arah)
+      // 5. TEKS DIALOG PRODUK (Running text kuning cerah tanpa latar • kiri ke kanan)
       if (subtitleText) {
         ctx.save();
         const dialogFontSize = Math.round(10.5 * scaleFactor);
@@ -1330,7 +1434,7 @@ Struktur JSON wajib:
       const cw = canvas.width;
       const ch = canvas.height;
 
-      ctx.fillStyle = '#292524';
+      ctx.fillStyle = '#1e293b';
       ctx.fillRect(0, 0, cw, ch);
 
       if (uploadedClips.length > 0) {
@@ -1341,19 +1445,17 @@ Struktur JSON wajib:
         vid.playsInline = true;
         vid.currentTime = firstClip.startTime || 0;
         vid.onseeked = () => {
-          ctx.fillStyle = '#292524';
+          ctx.fillStyle = '#1e293b';
           ctx.fillRect(0, 0, cw, ch);
           drawVideoCover(ctx, vid, cw, ch);
           drawUmkmOverlays(ctx, cw, ch, firstClip.subtitle, 0.45);
         };
       } else {
-        ctx.fillStyle = '#44403c';
-        ctx.fillRect(0, 0, cw, ch);
-        ctx.fillStyle = '#fef3c7';
-        ctx.font = `700 ${Math.round(13 * (cw / 360))}px "Plus Jakarta Sans", sans-serif`;
+        ctx.fillStyle = '#f8fafc';
+        ctx.font = `700 ${Math.round(12 * (cw / 360))}px "Plus Jakarta Sans", sans-serif`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText('Layar Contoh Video Ibu', cw / 2, ch / 2);
+        ctx.fillText('Layar Contoh Video', cw / 2, ch / 2);
         drawUmkmOverlays(ctx, cw, ch, 'Contoh teks dialog berjalan...', 0.45);
       }
     };
@@ -1367,24 +1469,17 @@ Struktur JSON wajib:
         { mime: 'video/webm', ext: 'webm' }
       ];
       for (const c of candidates) {
-        if (MediaRecorder.isTypeSupported(c.mime)) {
-          return { mimeType: c.mime, ext: c.ext };
-        }
+        if (MediaRecorder.isTypeSupported(c.mime)) return { mimeType: c.mime, ext: c.ext };
       }
       return { mimeType: '', ext: 'webm' };
     }
 
     async function jalankanUrutanKlip(recordOutput = false) {
       if (uploadedClips.length === 0) {
-        showToast('Silakan pilih minimal 1 video dari HP terlebih dahulu.');
+        showToast('Pilih minimal 1 video terlebih dahulu.');
         return;
       }
       if (isEditorRunning) return;
-
-      if (recordOutput && typeof MediaRecorder === 'undefined') {
-        showToast('Browser HP ini belum mendukung simpan video. Gunakan Google Chrome.');
-        return;
-      }
 
       isEditorRunning = true;
       document.getElementById('stopPlaybackBtn').classList.remove('hidden');
@@ -1397,17 +1492,15 @@ Struktur JSON wajib:
       canvas.width = cfg.w;
       canvas.height = cfg.h;
       const ctx = canvas.getContext('2d', { alpha: false, desynchronized: true });
-      const transitionType = document.getElementById('transitionSelect').value;
       const frameIntervalMs = 1000 / cfg.fps;
+
       let audioCtx = null;
       let audioDest = null;
       try {
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
         if (AudioCtx) {
           audioCtx = new AudioCtx();
-          if (audioCtx.state === 'suspended') {
-            await audioCtx.resume();
-          }
+          if (audioCtx.state === 'suspended') await audioCtx.resume();
           audioDest = audioCtx.createMediaStreamDestination();
         }
       } catch (_) {}
@@ -1434,7 +1527,7 @@ Struktur JSON wajib:
         document.getElementById('exportProgressWrap').classList.remove('hidden');
         document.getElementById('exportProgressBar').style.width = '0%';
         document.getElementById('exportProgressPct').textContent = '0%';
-        document.getElementById('editorStatusText').textContent = 'Menggabung Video...';
+        document.getElementById('editorStatusText').textContent = 'Menggabung...';
 
         const videoStream = canvas.captureStream(cfg.fps);
         const tracks = [...videoStream.getVideoTracks()];
@@ -1452,23 +1545,17 @@ Struktur JSON wajib:
         }
 
         activeMediaRecorder.ondataavailable = (e) => {
-          if (e.data && e.data.size > 0) {
-            recordedChunks.push(e.data);
-          }
+          if (e.data && e.data.size > 0) recordedChunks.push(e.data);
         };
-
         recorderStoppedPromise = new Promise((resolve) => {
           activeMediaRecorder.onstop = () => resolve();
         });
-
         activeMediaRecorder.start(500);
       } else {
-        document.getElementById('editorStatusText').textContent = 'Memutar Contoh...';
+        document.getElementById('editorStatusText').textContent = 'Memutar...';
       }
 
-      if (bgmEl) {
-        try { await bgmEl.play(); } catch (_) {}
-      }
+      if (bgmEl) try { await bgmEl.play(); } catch (_) {}
 
       const totalTimelineSec = uploadedClips.reduce((acc, c) => {
         const s = Math.max(0, c.startTime || 0);
@@ -1482,10 +1569,7 @@ Struktur JSON wajib:
 
       try {
         for (let i = 0; i < uploadedClips.length; i++) {
-          if (!isEditorRunning) {
-            completedNormally = false;
-            break;
-          }
+          if (!isEditorRunning) { completedNormally = false; break; }
 
           const clip = uploadedClips[i];
           const startSec = Math.max(0, clip.startTime || 0);
@@ -1513,44 +1597,22 @@ Struktur JSON wajib:
 
           await new Promise((res) => {
             let done = false;
-            const finish = () => {
-              if (done) return;
-              done = true;
-              res();
-            };
+            const finish = () => { if (!done) { done = true; res(); } };
             const timer = setTimeout(finish, 2500);
             vid.onloadedmetadata = () => {
-              if (startSec > 0.05) {
-                vid.currentTime = startSec;
-              } else {
-                clearTimeout(timer);
-                finish();
-              }
+              if (startSec > 0.05) vid.currentTime = startSec;
+              else { clearTimeout(timer); finish(); }
             };
-            vid.onseeked = () => {
-              clearTimeout(timer);
-              finish();
-            };
-            vid.onerror = () => {
-              clearTimeout(timer);
-              finish();
-            };
+            vid.onseeked = () => { clearTimeout(timer); finish(); };
+            vid.onerror = () => { clearTimeout(timer); finish(); };
           });
 
-          if (!isEditorRunning) {
-            completedNormally = false;
-            break;
-          }
+          if (!isEditorRunning) { completedNormally = false; break; }
 
           try {
             await vid.play();
           } catch (_) {
-            try {
-              vid.muted = true;
-              await vid.play();
-            } catch (errPlay) {
-              showToast(`Video #${i + 1} gagal diputar di browser ini.`);
-            }
+            try { vid.muted = true; await vid.play(); } catch (_) {}
           }
 
           await new Promise((resolveClip) => {
@@ -1558,12 +1620,7 @@ Struktur JSON wajib:
             let lastDrawPerf = 0;
 
             function stepFrame(nowPerf) {
-              if (!isEditorRunning) {
-                vid.pause();
-                resolveClip();
-                return;
-              }
-
+              if (!isEditorRunning) { vid.pause(); resolveClip(); return; }
               const currentNow = nowPerf || performance.now();
               const localElapsed = (currentNow - clipStartPerf) / 1000;
               const currentAnimTime = (currentNow - globalStartPerf) / 1000;
@@ -1578,22 +1635,9 @@ Struktur JSON wajib:
                 lastDrawPerf = currentNow;
                 const cw = canvas.width;
                 const ch = canvas.height;
-                ctx.fillStyle = '#292524';
+                ctx.fillStyle = '#1e293b';
                 ctx.fillRect(0, 0, cw, ch);
-
-                let alpha = 1;
-                let offsetX = 0;
-                const transDur = 0.35;
-                if (i > 0 && localElapsed < transDur && transitionType !== 'cut') {
-                  const t = localElapsed / transDur;
-                  if (transitionType === 'fade') {
-                    alpha = t;
-                  } else if (transitionType === 'slide') {
-                    offsetX = (1 - t) * cw * 0.3;
-                  }
-                }
-
-                drawVideoCover(ctx, vid, cw, ch, offsetX, alpha);
+                drawVideoCover(ctx, vid, cw, ch);
                 drawUmkmOverlays(ctx, cw, ch, clip.subtitle, currentAnimTime);
 
                 if (recordOutput) {
@@ -1603,30 +1647,21 @@ Struktur JSON wajib:
                   document.getElementById('exportProgressPct').textContent = `${pct}%`;
                 }
               }
-
               activeRafId = requestAnimationFrame(stepFrame);
             }
-
             activeRafId = requestAnimationFrame(stepFrame);
           });
 
-          if (clipSource) {
-            try { clipSource.disconnect(); } catch (_) {}
-          }
+          if (clipSource) try { clipSource.disconnect(); } catch (_) {}
           vid.removeAttribute('src');
           vid.load();
           globalElapsedSec += clipDur;
         }
       } finally {
-        if (bgmEl) {
-          bgmEl.pause();
-          bgmEl.currentTime = 0;
-        }
+        if (bgmEl) { bgmEl.pause(); bgmEl.currentTime = 0; }
 
         if (recordOutput && activeMediaRecorder && activeMediaRecorder.state !== 'inactive') {
-          try {
-            activeMediaRecorder.requestData();
-          } catch (_) {}
+          try { activeMediaRecorder.requestData(); } catch (_) {}
           activeMediaRecorder.stop();
           await recorderStoppedPromise;
 
@@ -1637,34 +1672,23 @@ Struktur JSON wajib:
             const finalMime = activeMediaRecorder.mimeType || formatInfo.mimeType || 'video/webm';
             const ext = finalMime.includes('mp4') ? 'mp4' : 'webm';
             lastMergedBlob = new Blob(recordedChunks, { type: finalMime });
-
-            if (lastMergedUrl) {
-              try { URL.revokeObjectURL(lastMergedUrl); } catch (_) {}
-            }
+            if (lastMergedUrl) try { URL.revokeObjectURL(lastMergedUrl); } catch (_) {}
             lastMergedUrl = URL.createObjectURL(lastMergedBlob);
 
-            const safeBrand = (document.getElementById('brandWatermarkInput').value.trim() || 'drama_iklan_umkm')
-              .toLowerCase()
-              .replace(/[^a-z0-9]+/g, '_');
+            const safeBrand = (document.getElementById('brandWatermarkInput').value.trim() || 'drama_umkm')
+              .toLowerCase().replace(/[^a-z0-9]+/g, '_');
             lastMergedFilename = `${safeBrand}_gabungan.${ext}`;
 
             const sizeMb = (lastMergedBlob.size / (1024 * 1024)).toFixed(2);
-            document.getElementById('finalFileInfo').textContent = `Ukuran ${sizeMb} MB • Siap disimpan ke HP.`;
-
-            const player = document.getElementById('finalResultVideoPlayer');
-            player.src = lastMergedUrl;
-
+            document.getElementById('finalFileInfo').textContent = `Ukuran ${sizeMb} MB • Siap disimpan.`;
+            document.getElementById('finalResultVideoPlayer').src = lastMergedUrl;
             document.getElementById('downloadResultBox').classList.remove('hidden');
-            showToast(`Video gabungan selesai (${sizeMb} MB)!`);
+            showToast(`Video selesai (${sizeMb} MB)!`);
             triggerMobileSave();
-          } else if (completedNormally) {
-            showToast('Rekaman kosong. Silakan ulangi kembali.');
           }
         }
 
-        if (audioCtx) {
-          try { await audioCtx.close(); } catch (_) {}
-        }
+        if (audioCtx) try { await audioCtx.close(); } catch (_) {}
 
         isEditorRunning = false;
         activeMediaRecorder = null;
@@ -1675,12 +1699,8 @@ Struktur JSON wajib:
       }
     }
 
-    window.triggerMobileSave = async function triggerMobileSave() {
-      if (!lastMergedBlob || !lastMergedUrl) {
-        showToast('Belum ada file video gabungan.');
-        return;
-      }
-
+    window.triggerMobileSave = function triggerMobileSave() {
+      if (!lastMergedBlob || !lastMergedUrl) return;
       const a = document.createElement('a');
       a.href = lastMergedUrl;
       a.download = lastMergedFilename;
@@ -1688,15 +1708,8 @@ Struktur JSON wajib:
       a.click();
       document.body.removeChild(a);
     };
-
-    window.previewMergedVideo = function previewMergedVideo() {
-      jalankanUrutanKlip(false);
-    };
-
-    window.exportMergedVideo = function exportMergedVideo() {
-      jalankanUrutanKlip(true);
-    };
-
+    window.previewMergedVideo = () => jalankanUrutanKlip(false);
+    window.exportMergedVideo = () => jalankanUrutanKlip(true);
     window.stopEditorPlayback = function stopEditorPlayback() {
       isEditorRunning = false;
       if (activeRafId) cancelAnimationFrame(activeRafId);
