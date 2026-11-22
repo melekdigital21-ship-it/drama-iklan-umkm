@@ -9,8 +9,50 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({ limit: '50mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Penyimpanan sementara video hasil gabungan agar Android WebView / APK bisa mengunduh via HTTP GET asli
+const tempVideoStore = new Map();
+
+app.post('/api/save-video', (req, res) => {
+  try {
+    const { base64, mimeType, filename } = req.body || {};
+    if (!base64) {
+      return res.status(400).json({ error: 'Data video kosong.' });
+    }
+    const id = `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    const buffer = Buffer.from(base64, 'base64');
+    const cleanMime = (mimeType || 'video/webm').split(';')[0];
+    const safeName = (filename || 'drama_iklan_umkm.webm').replace(/[^a-zA-Z0-9._-]/g, '_');
+
+    tempVideoStore.set(id, { buffer, mimeType: cleanMime, filename: safeName, createdAt: Date.now() });
+
+    // Bersihkan file sementara yang lebih dari 15 menit
+    for (const [key, item] of tempVideoStore.entries()) {
+      if (Date.now() - item.createdAt > 15 * 60 * 1000) {
+        tempVideoStore.delete(key);
+      }
+    }
+
+    return res.json({
+      downloadUrl: `/api/download-video/${id}/${encodeURIComponent(safeName)}`
+    });
+  } catch (err) {
+    return res.status(500).json({ error: err.message || 'Gagal menyiapkan unduhan video.' });
+  }
+});
+
+app.get('/api/download-video/:id/:filename', (req, res) => {
+  const item = tempVideoStore.get(req.params.id);
+  if (!item) {
+    return res.status(404).send('File video sudah kedaluwarsa, silakan tekan Gabung & Simpan ulang.');
+  }
+  res.setHeader('Content-Type', item.mimeType);
+  res.setHeader('Content-Disposition', `attachment; filename="${item.filename}"`);
+  res.setHeader('Content-Length', item.buffer.length);
+  return res.send(item.buffer);
+});
 
 app.post('/api/gemini', async (req, res) => {
   try {
