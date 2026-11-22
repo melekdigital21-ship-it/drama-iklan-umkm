@@ -164,7 +164,7 @@
             </div>
             <div>
               <label class="block text-xs font-semibold text-zinc-300 mb-1.5">Promo & Call-to-Action (CTA)</label>
-              <input id="cta" type="text" placeholder="Contoh: Promo Beli 2 Gratis 1, klik keranjang kuning!" class="w-full px-3 py-2.5 rounded-xl bg-zinc-900/90 border border-zinc-700 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-amber-500 transition" />
+              <input id="cta" type="text" placeholder="Contoh: Promo Beli 2 Gratis 1, klik keranjang kuning!" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900/90 border border-zinc-700 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-amber-500 transition" />
             </div>
           </div>
 
@@ -255,7 +255,7 @@
             <span class="text-amber-400">3.</span> Gabungkan & Edit Klip Video Iklan UMKM
           </h2>
           <p class="text-xs text-zinc-400 mt-1">
-            Unggah beberapa klip adegan (MP4/WebM/MOV), atur urutan & pemotongan durasi, pasang logo & foto produk melayang, badge harga berkedip halus, nomor telepon teks berjalan, lalu ekspor jadi satu video utuh bersuara.
+            Unggah beberapa klip adegan (MP4/WebM/MOV), atur urutan & pemotongan durasi, pasang logo mengambang berputar, badge harga berkedip lambat, dialog & nomor telepon running text berlawanan arah, lalu ekspor jadi satu video utuh bersuara.
           </p>
         </div>
         <label class="cursor-pointer px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white font-bold text-xs shadow-lg shadow-orange-500/20 transition flex items-center gap-2">
@@ -291,7 +291,7 @@
           <div class="p-5 rounded-xl bg-zinc-900/75 border border-zinc-800 space-y-4">
             <div class="flex items-center justify-between border-b border-zinc-800 pb-2.5">
               <h3 class="text-sm font-bold text-amber-300">Branding UMKM, Animasi Elegan & Audio</h3>
-              <span class="text-[11px] text-zinc-400">Latar teks otomatis menyesuaikan panjang teks</span>
+              <span class="text-[11px] text-zinc-400">Running text berlawanan arah & logo berputar</span>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -332,7 +332,7 @@
               </div>
               <div>
                 <label class="block text-[11px] font-semibold text-zinc-300 mb-1">
-                  Teks Harga / Promo <span class="text-rose-400">(Kedip Perlahan)</span>
+                  Teks Harga / Promo <span class="text-rose-400">(Kedip Lambat)</span>
                 </label>
                 <input id="promoBadgeInput" type="text" oninput="renderSinglePreviewFrame()" placeholder="Contoh: HANYA Rp 25.000 • Beli 2 Gratis 1" class="w-full px-3 py-2 rounded-lg bg-zinc-950 border border-zinc-700 text-xs text-white placeholder-zinc-600 focus:border-amber-500 focus:outline-none" />
               </div>
@@ -341,7 +341,7 @@
             <!-- Nomor Telepon / WA Teks Berjalan -->
             <div>
               <label class="block text-[11px] font-semibold text-zinc-300 mb-1">
-                Nomor Telepon / WhatsApp Pemesanan <span class="text-emerald-400">(Teks Berjalan / Running Text)</span>
+                Nomor Telepon / WhatsApp Pemesanan <span class="text-pink-400">(Running Text Kuning • Latar Pink-Ungu)</span>
               </label>
               <input id="ctaBannerInput" type="text" oninput="renderSinglePreviewFrame()" placeholder="Contoh: Order Cepat WhatsApp: 0812-3456-7890 • Pengiriman Seluruh Indonesia" class="w-full px-3 py-2 rounded-lg bg-zinc-950 border border-zinc-700 text-xs text-white placeholder-zinc-600 focus:border-amber-500 focus:outline-none" />
             </div>
@@ -350,7 +350,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div class="p-3 rounded-lg bg-zinc-950/90 border border-zinc-800 space-y-2">
                 <div class="flex items-center justify-between">
-                  <label class="block text-[11px] font-semibold text-zinc-300">Logo Brand (Melayang)</label>
+                  <label class="block text-[11px] font-semibold text-zinc-300">Logo Brand (Mengambang & Memutar)</label>
                   <button type="button" onclick="clearLogo()" id="clearLogoBtn" class="hidden text-[10px] text-rose-400 hover:underline">Hapus</button>
                 </div>
                 <input id="logoUploadInput" type="file" accept="image/*" onchange="handleLogoUpload(event)" class="w-full text-[11px] text-zinc-400 file:mr-2.5 file:py-1 file:px-2.5 file:rounded-md file:border-0 file:text-[11px] file:font-semibold file:bg-zinc-800 file:text-amber-300 hover:file:bg-zinc-700" />
@@ -1011,7 +1011,11 @@ Pastikan setiap adegan memiliki pembagian waktu yang pas hingga total ${durObj.s
       ctx.restore();
     }
 
-    // Elegant Animated UMKM Overlays (Compact Commercial Standard + Motion)
+    // Elegant Animated UMKM Overlays:
+    // - Harga: kedip lambat
+    // - Logo: mengambang dan memutar sebentar secara berkala
+    // - Dialog produk: running text kuning cerah berjalan dari kiri ke kanan tanpa warna latar
+    // - Nomor telepon: running text kuning lebih besar berjalan berlawanan arah (kanan ke kiri) berlatar pink gradasi ungu
     function drawUmkmOverlays(ctx, cw, ch, subtitleText = '', elapsedSec = 0) {
       const brandText = document.getElementById('brandWatermarkInput').value.trim();
       const promoText = document.getElementById('promoBadgeInput').value.trim();
@@ -1020,30 +1024,39 @@ Pastikan setiap adegan memiliki pembagian waktu yang pas hingga total ${durObj.s
       const scaleFactor = cw / 540;
       const margin = Math.round(14 * scaleFactor);
 
-      // Gentle floating oscillation (melayang perlahan di udara)
-      const floatY = Math.sin(elapsedSec * 2.2) * (4 * scaleFactor);
-      const floatTilt = Math.sin(elapsedSec * 1.6) * 0.018;
+      // Gentle floating oscillation (mengambang di udara)
+      const floatY = Math.sin(elapsedSec * 2.1) * (4.5 * scaleFactor);
+      const floatTilt = Math.sin(elapsedSec * 1.5) * 0.016;
 
-      // 1. NAMA PRODUK & LOGO PRODUK (Ukuran standar ringkas, melayang di udara, latar pas teks)
-      let brandBottomY = margin;
+      // Periodic smooth 360-degree spin for the logo (memutar sebentar setiap siklus 4.5 detik)
+      const spinCycle = elapsedSec % 4.5;
+      const spinDuration = 1.15;
+      let logoSpinAngle = 0;
+      if (spinCycle < spinDuration) {
+        const t = spinCycle / spinDuration;
+        // Smooth easeInOutCubic rotation
+        const eased = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+        logoSpinAngle = eased * Math.PI * 2;
+      }
+
+      // 1. NAMA PRODUK & LOGO PRODUK (Mengambang & logo memutar sebentar secara berkala)
       if (brandText || logoImageObj) {
         ctx.save();
         const fontSize = Math.round(11.5 * scaleFactor);
         ctx.font = `700 ${fontSize}px "Plus Jakarta Sans", sans-serif`;
 
-        const logoSize = logoImageObj ? Math.round(22 * scaleFactor) : 0;
-        const gap = (logoImageObj && brandText) ? Math.round(6 * scaleFactor) : 0;
+        const logoSize = logoImageObj ? Math.round(24 * scaleFactor) : 0;
+        const gap = (logoImageObj && brandText) ? Math.round(7 * scaleFactor) : 0;
         const textWidth = brandText ? ctx.measureText(brandText).width : 0;
         const padX = Math.round(10 * scaleFactor);
         const padY = Math.round(5 * scaleFactor);
 
         const contentW = logoSize + gap + textWidth;
-        const pillW = Math.min(cw * 0.52, contentW + padX * 2);
+        const pillW = Math.min(cw * 0.54, contentW + padX * 2);
         const pillH = Math.max(logoSize + padY, fontSize + padY * 2);
 
         const boxX = margin;
         const boxY = margin + floatY;
-        brandBottomY = margin + pillH;
 
         ctx.translate(boxX + pillW / 2, boxY + pillH / 2);
         ctx.rotate(floatTilt);
@@ -1070,11 +1083,17 @@ Pastikan setiap adegan memiliki pembagian waktu yang pas hingga total ${durObj.s
         let cursorX = boxX + padX;
         if (logoImageObj) {
           const ly = boxY + (pillH - logoSize) / 2;
+          const logoCx = cursorX + logoSize / 2;
+          const logoCy = ly + logoSize / 2;
+
           ctx.save();
-          drawRoundRect(ctx, cursorX, ly, logoSize, logoSize, logoSize / 2);
+          ctx.translate(logoCx, logoCy);
+          ctx.rotate(logoSpinAngle);
+          drawRoundRect(ctx, -logoSize / 2, -logoSize / 2, logoSize, logoSize, logoSize / 2);
           ctx.clip();
-          ctx.drawImage(logoImageObj, cursorX, ly, logoSize, logoSize);
+          ctx.drawImage(logoImageObj, -logoSize / 2, -logoSize / 2, logoSize, logoSize);
           ctx.restore();
+
           cursorX += logoSize + gap;
         }
 
@@ -1086,13 +1105,14 @@ Pastikan setiap adegan memiliki pembagian waktu yang pas hingga total ${durObj.s
         ctx.restore();
       }
 
-      // 2. TEKS HARGA / PROMO (Ukuran ringkas standar iklan, kedip perlahan, latar pas teks)
+      // 2. TEKS HARGA / PROMO (Kedip lambat)
       let priceBottomY = margin;
       if (promoText) {
         ctx.save();
-        const pulseWave = (Math.sin(elapsedSec * 2.6) + 1) / 2; // Kedip halus perlahan
-        const pulseAlpha = 0.45 + pulseWave * 0.55;
-        const pulseScale = 0.97 + pulseWave * 0.04;
+        // Slow gentle blink cycle (~0.24 Hz -> ~4.1 seconds per slow blink)
+        const slowBlinkWave = (Math.sin(elapsedSec * 1.55) + 1) / 2;
+        const blinkAlpha = 0.25 + slowBlinkWave * 0.75;
+        const blinkScale = 0.96 + slowBlinkWave * 0.05;
 
         const fontSize = Math.round(11.5 * scaleFactor);
         ctx.font = `800 ${fontSize}px "Plus Jakarta Sans", sans-serif`;
@@ -1107,17 +1127,17 @@ Pastikan setiap adegan memiliki pembagian waktu yang pas hingga total ${durObj.s
         const by = margin;
         priceBottomY = by + badgeH;
 
-        ctx.globalAlpha = pulseAlpha;
+        ctx.globalAlpha = blinkAlpha;
         ctx.translate(bx + badgeW / 2, by + badgeH / 2);
-        ctx.scale(pulseScale, pulseScale);
+        ctx.scale(blinkScale, blinkScale);
         ctx.translate(-(bx + badgeW / 2), -(by + badgeH / 2));
 
         const priceGrad = ctx.createLinearGradient(bx, by, bx + badgeW, by + badgeH);
-        priceGrad.addColorStop(0, 'rgba(225, 29, 72, 0.92)');
-        priceGrad.addColorStop(1, 'rgba(234, 88, 12, 0.92)');
+        priceGrad.addColorStop(0, 'rgba(225, 29, 72, 0.94)');
+        priceGrad.addColorStop(1, 'rgba(234, 88, 12, 0.94)');
 
-        ctx.shadowColor = 'rgba(249, 115, 22, 0.4)';
-        ctx.shadowBlur = 8 * scaleFactor;
+        ctx.shadowColor = 'rgba(249, 115, 22, 0.45)';
+        ctx.shadowBlur = 9 * scaleFactor;
         ctx.shadowOffsetY = 3 * scaleFactor;
 
         drawRoundRect(ctx, bx, by, badgeW, badgeH, badgeH / 2);
@@ -1127,7 +1147,7 @@ Pastikan setiap adegan memiliki pembagian waktu yang pas hingga total ${durObj.s
         ctx.shadowBlur = 0;
         ctx.shadowOffsetY = 0;
         ctx.lineWidth = 1 * scaleFactor;
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.65)';
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
         ctx.stroke();
 
         ctx.fillStyle = '#ffffff';
@@ -1137,7 +1157,7 @@ Pastikan setiap adegan memiliki pembagian waktu yang pas hingga total ${durObj.s
         ctx.restore();
       }
 
-      // 3. GAMBAR / FOTO PRODUK (Ukuran thumbnail produk ringkas melayang di pojok kanan atas)
+      // 3. GAMBAR / FOTO PRODUK (Thumbnail produk melayang di pojok kanan atas)
       if (productImageObj) {
         ctx.save();
         const prodFloatY = Math.cos(elapsedSec * 2.0) * (5 * scaleFactor);
@@ -1184,65 +1204,92 @@ Pastikan setiap adegan memiliki pembagian waktu yang pas hingga total ${durObj.s
         ctx.restore();
       }
 
-      // 4. NOMOR TELEPON / WHATSAPP (Teks berjalan lambat TANPA warna latar & berjalan sepanjang layar)
-      const tickerHeight = ctaText ? Math.round(24 * scaleFactor) : 0;
+      // 4. NOMOR TELEPON / WHATSAPP
+      // Lebih besar dari teks dialog produk, berwarna kuning cerah, berjalan dari KANAN ke KIRI,
+      // dan berlatar warna PINK dengan GRADASI UNGU.
+      const phoneBarHeight = ctaText ? Math.round(32 * scaleFactor) : 0;
       if (ctaText) {
         ctx.save();
-        const fontSize = Math.round(12 * scaleFactor);
-        ctx.font = `700 ${fontSize}px "Plus Jakarta Sans", sans-serif`;
+        const barX = 0;
+        const barY = ch - phoneBarHeight;
+
+        const pinkPurpleGrad = ctx.createLinearGradient(barX, barY, cw, barY + phoneBarHeight);
+        pinkPurpleGrad.addColorStop(0, 'rgba(236, 72, 153, 0.92)');   // Pink cerah (#ec4899)
+        pinkPurpleGrad.addColorStop(0.5, 'rgba(192, 38, 211, 0.92)'); // Fuchsia-ungu (#c026d3)
+        pinkPurpleGrad.addColorStop(1, 'rgba(107, 33, 168, 0.94)');   // Ungu elegan (#6b21a8)
+
+        ctx.fillStyle = pinkPurpleGrad;
+        ctx.fillRect(barX, barY, cw, phoneBarHeight);
+
+        // Garis tipis pemisah di atas banner
+        ctx.fillStyle = 'rgba(253, 224, 71, 0.55)';
+        ctx.fillRect(barX, barY, cw, Math.max(1, 1.2 * scaleFactor));
+
+        // Ukuran font lebih besar dibanding dialog produk (15.5px vs 12px)
+        const phoneFontSize = Math.round(15.5 * scaleFactor);
+        ctx.font = `800 ${phoneFontSize}px "Plus Jakarta Sans", sans-serif`;
 
         const measuredW = ctx.measureText(ctaText).width;
-        const yPos = ch - Math.round(14 * scaleFactor);
-
-        // Kecepatan lambat sepanjang lebar layar (dari kanan ke kiri)
-        const speedPxPerSec = 42 * scaleFactor;
-        const gapBetweenRepeats = Math.round(90 * scaleFactor);
+        const speedPxPerSec = 52 * scaleFactor;
+        const gapBetweenRepeats = Math.round(85 * scaleFactor);
         const cycleLen = Math.max(cw, measuredW) + gapBetweenRepeats;
         const shift = (elapsedSec * speedPxPerSec) % cycleLen;
 
         ctx.textAlign = 'left';
         ctx.textBaseline = 'middle';
+        const textY = barY + phoneBarHeight / 2;
 
-        // Outline gelap tipis + drop shadow agar terbaca jelas tanpa kotak latar
-        ctx.shadowColor = 'rgba(0, 0, 0, 0.92)';
-        ctx.shadowBlur = 6 * scaleFactor;
-        ctx.shadowOffsetX = 0;
-        ctx.shadowOffsetY = 1.5 * scaleFactor;
-        ctx.lineWidth = 2.8 * scaleFactor;
-        ctx.strokeStyle = 'rgba(0, 0, 0, 0.85)';
-        ctx.fillStyle = '#fde68a';
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.65)';
+        ctx.shadowBlur = 4 * scaleFactor;
+        ctx.shadowOffsetY = 1 * scaleFactor;
+        ctx.lineWidth = 2 * scaleFactor;
+        ctx.strokeStyle = 'rgba(59, 7, 100, 0.75)';
+        ctx.fillStyle = '#fef08a'; // Kuning cerah
 
+        // Bergerak dari KANAN ke KIRI
         let drawX = cw - shift;
         while (drawX > -cycleLen) {
-          ctx.strokeText(ctaText, drawX, yPos);
-          ctx.fillText(ctaText, drawX, yPos);
+          ctx.strokeText(ctaText, drawX, textY);
+          ctx.fillText(ctaText, drawX, textY);
           drawX -= cycleLen;
         }
         ctx.restore();
       }
 
-      // 5. TEKS DIALOG ADEGAN (Ringkas & proporsional di atas teks berjalan)
+      // 5. TEKS DIALOG PRODUK
+      // Running text berwarna kuning cerah TANPA warna latar, berjalan berlawanan arah (dari KIRI ke KANAN)
       if (subtitleText) {
         ctx.save();
-        const fontSize = Math.round(12.5 * scaleFactor);
-        ctx.font = `700 ${fontSize}px "Plus Jakarta Sans", sans-serif`;
+        const dialogFontSize = Math.round(12 * scaleFactor);
+        ctx.font = `700 ${dialogFontSize}px "Plus Jakarta Sans", sans-serif`;
 
-        const padX = Math.round(12 * scaleFactor);
-        const padY = Math.round(6 * scaleFactor);
-        const rawW = ctx.measureText(subtitleText).width;
-        const pillW = Math.min(cw - margin * 2, rawW + padX * 2);
-        const pillH = fontSize + padY * 2;
-        const pillX = (cw - pillW) / 2;
-        const pillY = ch - margin - tickerHeight - (ctaText ? Math.round(6 * scaleFactor) : 0) - pillH;
+        const measuredDialogW = ctx.measureText(subtitleText).width;
+        const dialogY = ch - phoneBarHeight - Math.round(16 * scaleFactor);
 
-        drawRoundRect(ctx, pillX, pillY, pillW, pillH, 10 * scaleFactor);
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.65)';
-        ctx.fill();
+        const speedDialogPx = 44 * scaleFactor;
+        const gapDialog = Math.round(80 * scaleFactor);
+        const cycleDialog = Math.max(cw, measuredDialogW) + gapDialog;
+        const shiftDialog = (elapsedSec * speedDialogPx) % cycleDialog;
 
-        ctx.fillStyle = '#ffffff';
-        ctx.textAlign = 'center';
+        ctx.textAlign = 'left';
         ctx.textBaseline = 'middle';
-        ctx.fillText(subtitleText, cw / 2, pillY + pillH / 2, pillW - padX * 2);
+
+        // Tanpa warna latar — gunakan outline & bayangan gelap agar tetap tajam terbaca
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.95)';
+        ctx.shadowBlur = 6 * scaleFactor;
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 1.5 * scaleFactor;
+        ctx.lineWidth = 2.8 * scaleFactor;
+        ctx.strokeStyle = 'rgba(0, 0, 0, 0.88)';
+        ctx.fillStyle = '#facc15'; // Kuning cerah
+
+        // Bergerak berlawanan arah: dari KIRI ke KANAN
+        let drawDialogX = -measuredDialogW + shiftDialog;
+        while (drawDialogX < cw) {
+          ctx.strokeText(subtitleText, drawDialogX, dialogY);
+          ctx.fillText(subtitleText, drawDialogX, dialogY);
+          drawDialogX += cycleDialog;
+        }
         ctx.restore();
       }
     }
@@ -1267,7 +1314,7 @@ Pastikan setiap adegan memiliki pembagian waktu yang pas hingga total ${durObj.s
           ctx.fillStyle = '#09090b';
           ctx.fillRect(0, 0, cw, ch);
           drawVideoCover(ctx, vid, cw, ch);
-          drawUmkmOverlays(ctx, cw, ch, firstClip.subtitle, 0.8);
+          drawUmkmOverlays(ctx, cw, ch, firstClip.subtitle, 0.45);
         };
       } else {
         // Placeholder stage
@@ -1278,9 +1325,9 @@ Pastikan setiap adegan memiliki pembagian waktu yang pas hingga total ${durObj.s
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText('Pratinjau Video & Animasi UMKM', cw / 2, ch / 2);
-        drawUmkmOverlays(ctx, cw, ch, 'Contoh teks dialog adegan...', 0.8);
+        drawUmkmOverlays(ctx, cw, ch, 'Contoh teks dialog produk berjalan...', 0.45);
       }
-    }
+    };
 
     // Core Playback & Recording Engine with Persistent Shared AudioContext
     async function jalankanUrutanKlip(recordOutput = false) {
