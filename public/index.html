@@ -475,17 +475,17 @@
               <p id="finalFileInfo" class="text-[11px] text-emerald-800">Siap disimpan ke HP.</p>
             </div>
             <div class="flex items-center gap-1.5 shrink-0">
-              <button type="button" id="shareMobileBtn" onclick="shareVideoToMobile()" class="hidden px-3 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-extrabold text-xs">
-                📲 Simpan / Kirim
+              <button type="button" id="shareMobileBtn" onclick="shareVideoToMobile()" class="px-3 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-extrabold text-xs">
+                📲 Kirim / Simpan
               </button>
-              <a id="directDownloadLink" href="#" download="drama_iklan_umkm.mp4" onclick="return handleDirectDownloadClick(event)" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs inline-block text-center">
-                ⬇️ Simpan HP
-              </a>
+              <button type="button" id="directDownloadBtn" onclick="downloadMergedVideoNow()" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs">
+                ⬇️ Unduh Video
+              </button>
             </div>
           </div>
           <video id="finalResultVideoPlayer" controls playsinline webkit-playsinline class="w-full max-h-[240px] rounded-xl bg-black"></video>
           <p class="text-[10px] font-semibold text-emerald-900 leading-snug">
-            💡 Jika tidak otomatis masuk galeri, tekan <strong>Simpan / Kirim</strong> lalu pilih <em>Simpan Video</em>, atau tekan ikon <strong>⋮ (titik tiga)</strong> di pojok video → <strong>Download</strong>.
+            💡 Jika tidak otomatis terunduh (misalnya dibuka dari dalam WhatsApp/IG), tekan <strong>Kirim / Simpan</strong> lalu pilih <em>Simpan Video</em>, atau tekan tombol <strong>⋮</strong> di sudut pemutar video di atas → <strong>Download</strong>.
           </p>
         </div>
       </div>
@@ -1438,20 +1438,26 @@ Struktur JSON wajib:
     };
 
     function pickSupportedRecorderMime() {
-      if (typeof MediaRecorder === 'undefined') return { mimeType: '', ext: 'mp4' };
-      const candidates = [
-        { mime: 'video/mp4;codecs=avc1.42E01E,mp4a.40.2', ext: 'mp4' },
-        { mime: 'video/mp4;codecs=avc1,mp4a.40.2', ext: 'mp4' },
-        { mime: 'video/mp4', ext: 'mp4' },
-        { mime: 'video/webm;codecs=vp8,opus', ext: 'webm' },
-        { mime: 'video/webm', ext: 'webm' }
-      ];
+      if (typeof MediaRecorder === 'undefined') return { mimeType: '', ext: 'webm' };
+      const isApple = /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent || '') && 'ontouchend' in document;
+      const candidates = isApple
+        ? [
+            { mime: 'video/mp4', ext: 'mp4' },
+            { mime: 'video/webm', ext: 'webm' }
+          ]
+        : [
+            { mime: 'video/webm;codecs=vp8,opus', ext: 'webm' },
+            { mime: 'video/webm;codecs=vp8', ext: 'webm' },
+            { mime: 'video/webm', ext: 'webm' },
+            { mime: 'video/mp4;codecs=avc1,mp4a.40.2', ext: 'mp4' },
+            { mime: 'video/mp4', ext: 'mp4' }
+          ];
       for (const c of candidates) {
         try {
           if (MediaRecorder.isTypeSupported(c.mime)) return { mimeType: c.mime, ext: c.ext };
         } catch (_) {}
       }
-      return { mimeType: '', ext: 'mp4' };
+      return { mimeType: '', ext: isApple ? 'mp4' : 'webm' };
     }
 
     async function jalankanUrutanKlip(recordOutput = false) {
@@ -1460,6 +1466,11 @@ Struktur JSON wajib:
         return;
       }
       if (isEditorRunning) return;
+
+      if (recordOutput && typeof MediaRecorder === 'undefined') {
+        showToast('Browser HP ini belum mendukung simpan video. Gunakan Google Chrome / Safari terbaru.');
+        return;
+      }
 
       isEditorRunning = true;
       document.getElementById('stopPlaybackBtn').classList.remove('hidden');
@@ -1471,8 +1482,12 @@ Struktur JSON wajib:
       const canvas = document.getElementById('videoEditorCanvas');
       canvas.width = cfg.w;
       canvas.height = cfg.h;
-      const ctx = canvas.getContext('2d', { alpha: false, desynchronized: true });
+      const ctx = canvas.getContext('2d', { alpha: false });
       const frameIntervalMs = 1000 / cfg.fps;
+
+      // Gambar frame pembuka langsung agar stream kanvas langsung terisi piksel
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(0, 0, cfg.w, cfg.h);
 
       let audioCtx = null;
       let audioDest = null;
@@ -1483,7 +1498,10 @@ Struktur JSON wajib:
           if (audioCtx.state === 'suspended') await audioCtx.resume();
           audioDest = audioCtx.createMediaStreamDestination();
         }
-      } catch (_) {}
+      } catch (_) {
+        audioCtx = null;
+        audioDest = null;
+      }
 
       let bgmEl = null;
       if (bgmAudioUrl && audioCtx && audioDest) {
@@ -1510,18 +1528,26 @@ Struktur JSON wajib:
         document.getElementById('editorStatusText').textContent = 'Menggabung...';
 
         const videoStream = canvas.captureStream(cfg.fps);
-        const tracks = [...videoStream.getVideoTracks()];
-        if (audioDest && audioDest.stream.getAudioTracks().length > 0) {
-          tracks.push(...audioDest.stream.getAudioTracks());
-        }
-        const combinedStream = new MediaStream(tracks);
+        const videoTracks = videoStream.getVideoTracks();
+        const audioTracks = audioDest ? audioDest.stream.getAudioTracks() : [];
 
+        // Siapkan stream gabungan, dengan fallback otomatis ke video-only jika HP menolak kombinasi audio
+        let combinedStream = new MediaStream([...videoTracks, ...audioTracks]);
         try {
           activeMediaRecorder = formatInfo.mimeType
             ? new MediaRecorder(combinedStream, { mimeType: formatInfo.mimeType, videoBitsPerSecond: cfg.bitrate })
             : new MediaRecorder(combinedStream, { videoBitsPerSecond: cfg.bitrate });
         } catch (_) {
-          activeMediaRecorder = new MediaRecorder(combinedStream);
+          try {
+            combinedStream = new MediaStream([...videoTracks]);
+            activeMediaRecorder = new MediaRecorder(combinedStream);
+          } catch (errRec) {
+            isEditorRunning = false;
+            document.getElementById('previewMergedBtn').disabled = false;
+            document.getElementById('exportMergedBtn').disabled = false;
+            showToast('Perangkat menolak perekaman video: ' + (errRec?.message || 'Error'));
+            return;
+          }
         }
 
         activeMediaRecorder.ondataavailable = (e) => {
@@ -1530,7 +1556,21 @@ Struktur JSON wajib:
         recorderStoppedPromise = new Promise((resolve) => {
           activeMediaRecorder.onstop = () => resolve();
         });
-        activeMediaRecorder.start(500);
+
+        try {
+          activeMediaRecorder.start(250);
+        } catch (_) {
+          // Fallback terakhir: rekam video kanvas saja tanpa timeslice
+          combinedStream = new MediaStream([...videoTracks]);
+          activeMediaRecorder = new MediaRecorder(combinedStream);
+          activeMediaRecorder.ondataavailable = (e) => {
+            if (e.data && e.data.size > 0) recordedChunks.push(e.data);
+          };
+          recorderStoppedPromise = new Promise((resolve) => {
+            activeMediaRecorder.onstop = () => resolve();
+          });
+          activeMediaRecorder.start();
+        }
       } else {
         document.getElementById('editorStatusText').textContent = 'Memutar...';
       }
@@ -1674,18 +1714,23 @@ Struktur JSON wajib:
           bgmEl.currentTime = 0;
         }
 
-        if (recordOutput && activeMediaRecorder && activeMediaRecorder.state !== 'inactive') {
-          try { activeMediaRecorder.requestData(); } catch (_) {}
-          activeMediaRecorder.stop();
+        if (recordOutput && activeMediaRecorder) {
+          if (activeMediaRecorder.state === 'recording') {
+            try { activeMediaRecorder.requestData(); } catch (_) {}
+            await new Promise((r) => setTimeout(r, 150));
+            try { activeMediaRecorder.stop(); } catch (_) {}
+          }
           await recorderStoppedPromise;
 
           document.getElementById('exportProgressBar').style.width = '100%';
           document.getElementById('exportProgressPct').textContent = '100%';
 
           if (recordedChunks.length > 0 && completedNormally) {
-            const finalMime = activeMediaRecorder.mimeType || formatInfo.mimeType || 'video/mp4';
-            const ext = finalMime.includes('webm') && !finalMime.includes('mp4') ? 'webm' : 'mp4';
-            lastMergedBlob = new Blob(recordedChunks, { type: finalMime });
+            const rawMime = activeMediaRecorder.mimeType || formatInfo.mimeType || 'video/webm';
+            const cleanMime = rawMime.split(';')[0] || 'video/webm';
+            const ext = cleanMime.includes('mp4') ? 'mp4' : 'webm';
+            lastMergedBlob = new Blob(recordedChunks, { type: cleanMime });
+
             if (lastMergedUrl) {
               try { URL.revokeObjectURL(lastMergedUrl); } catch (_) {}
             }
@@ -1698,31 +1743,19 @@ Struktur JSON wajib:
 
             const sizeMb = (lastMergedBlob.size / (1024 * 1024)).toFixed(2);
             document.getElementById('finalFileInfo').textContent = `Ukuran ${sizeMb} MB (${ext.toUpperCase()}) • Siap disimpan.`;
-            document.getElementById('finalResultVideoPlayer').src = lastMergedUrl;
 
-            const dlLink = document.getElementById('directDownloadLink');
-            if (dlLink) {
-              dlLink.href = lastMergedUrl;
-              dlLink.download = lastMergedFilename;
-            }
+            const player = document.getElementById('finalResultVideoPlayer');
+            player.src = lastMergedUrl;
+            player.load();
 
-            const shareBtn = document.getElementById('shareMobileBtn');
-            if (shareBtn) {
-              try {
-                const testFile = new File([lastMergedBlob], lastMergedFilename, { type: finalMime });
-                if (navigator.canShare && navigator.canShare({ files: [testFile] })) {
-                  shareBtn.classList.remove('hidden');
-                } else {
-                  shareBtn.classList.add('hidden');
-                }
-              } catch (_) {
-                shareBtn.classList.add('hidden');
-              }
-            }
+            const boxHasil = document.getElementById('downloadResultBox');
+            boxHasil.classList.remove('hidden');
+            boxHasil.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-            document.getElementById('downloadResultBox').classList.remove('hidden');
-            showToast(`✅ Video selesai (${sizeMb} MB)! Tekan tombol Simpan HP.`);
-            triggerMobileSave();
+            showToast(`✅ Video selesai (${sizeMb} MB)! Tekan tombol Unduh Video atau Kirim / Simpan.`);
+            downloadMergedVideoNow();
+          } else if (completedNormally) {
+            showToast('⚠️ Hasil rekaman kosong di browser ini. Coba buka menggunakan Google Chrome atau Safari.');
           }
         }
 
@@ -1739,42 +1772,11 @@ Struktur JSON wajib:
       }
     }
 
-    window.handleDirectDownloadClick = function handleDirectDownloadClick(event) {
+    window.downloadMergedVideoNow = function downloadMergedVideoNow() {
       if (!lastMergedBlob || !lastMergedUrl) {
-        event.preventDefault();
-        showToast('Belum ada video yang digabungkan.');
-        return false;
-      }
-      showToast('Mengunduh video ke folder Download HP...');
-      return true;
-    };
-
-    window.shareVideoToMobile = async function shareVideoToMobile() {
-      if (!lastMergedBlob) {
         showToast('Belum ada video yang digabungkan.');
         return;
       }
-      try {
-        const file = new File([lastMergedBlob], lastMergedFilename, {
-          type: lastMergedBlob.type || 'video/mp4'
-        });
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-          await navigator.share({
-            files: [file],
-            title: lastMergedFilename,
-            text: 'Video Iklan UMKM Jawara Depok'
-          });
-          showToast('✅ Video berhasil dibagikan / disimpan!');
-          return;
-        }
-      } catch (err) {
-        if (err && err.name === 'AbortError') return;
-      }
-      triggerMobileSave();
-    };
-
-    window.triggerMobileSave = function triggerMobileSave() {
-      if (!lastMergedBlob || !lastMergedUrl) return;
       try {
         const a = document.createElement('a');
         a.style.display = 'none';
@@ -1784,8 +1786,35 @@ Struktur JSON wajib:
         a.click();
         setTimeout(() => {
           try { document.body.removeChild(a); } catch (_) {}
-        }, 1500);
-      } catch (_) {}
+        }, 2000);
+        showToast('Mengunduh video... Cek folder Download / Galeri HP.');
+      } catch (_) {
+        showToast('Tekan tombol Kirim / Simpan atau ikon titik tiga di pemutar video.');
+      }
+    };
+
+    window.shareVideoToMobile = async function shareVideoToMobile() {
+      if (!lastMergedBlob) {
+        showToast('Belum ada video yang digabungkan.');
+        return;
+      }
+      try {
+        const file = new File([lastMergedBlob], lastMergedFilename, {
+          type: lastMergedBlob.type || 'video/webm'
+        });
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            files: [file],
+            title: lastMergedFilename,
+            text: 'Video Iklan UMKM Jawara Depok'
+          });
+          showToast('✅ Video berhasil disimpan / dibagikan!');
+          return;
+        }
+      } catch (err) {
+        if (err && err.name === 'AbortError') return;
+      }
+      downloadMergedVideoNow();
     };
 
     window.previewMergedVideo = () => jalankanUrutanKlip(false);
