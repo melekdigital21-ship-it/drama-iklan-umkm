@@ -99,25 +99,24 @@
     </div>
 
     <!-- TOP BAR -->
-    <header class="px-5 pt-4 pb-2 flex items-start justify-between bg-white sticky top-0 z-30 border-b border-slate-100">
-      <button onclick="toggleDrawer(true)" aria-label="Buka Menu" class="p-2 -ml-2 rounded-xl hover:bg-slate-100 text-sky-600 transition">
+    <header class="px-4 pt-3 pb-2 flex items-center justify-between bg-white sticky top-0 z-30 border-b border-slate-100">
+      <button onclick="toggleDrawer(true)" aria-label="Buka Menu" class="p-2 rounded-xl hover:bg-slate-100 text-sky-600 transition shrink-0">
         <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
         </svg>
+      </button>
+
       <!-- Logo File Gambar -->
-      <div class="flex flex-col items-center select-none -mt-1">
+      <div class="flex items-center justify-center select-none shrink-0 mx-2">
         <img
           src="logo-jawara.jpg"
-          alt="Logo Jawara Depok Jaringan Wirausaha"
-          class="w-36 h-auto max-h-20 object-contain"
+          alt="Jawara Depok"
+          class="h-14 w-auto max-w-[140px] object-contain block"
         />
       </div>
 
       <!-- Indikator Status Gemini API -->
-      </div>
-
-      <!-- Indikator Status Gemini API -->
-      <button onclick="openApiModal()" id="apiStatusBadge" title="Status Sambungan Gemini API" class="mt-1 inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full text-[11px] font-extrabold bg-slate-100 text-slate-800 border border-slate-300">
+      <button onclick="openApiModal()" id="apiStatusBadge" title="Status Sambungan Gemini API" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full text-[11px] font-extrabold bg-slate-100 text-slate-800 border border-slate-300 shrink-0">
         <span id="apiStatusDot" class="w-2 h-2 rounded-full bg-amber-500"></span>
         <span id="apiStatusText">API</span>
       </button>
@@ -594,9 +593,6 @@
       showToast('Nama profil berhasil disimpan!');
     }
 
-    // ==========================================
-    // API KEY & LIVE CONNECTION STATUS
-    // ==========================================
     function updateApiConnectionBadge() {
       const badge = document.getElementById('apiStatusBadge');
       const dot = document.getElementById('apiStatusDot');
@@ -605,7 +601,7 @@
       const manualKey = (localStorage.getItem('gemini_api_key_umkm') || '').trim();
 
       if (manualKey || isServerGeminiConnected) {
-        if (badge) badge.className = 'mt-1 inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full text-[11px] font-extrabold bg-emerald-100 text-emerald-950 border border-emerald-500';
+        if (badge) badge.className = 'inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full text-[11px] font-extrabold bg-emerald-100 text-emerald-950 border border-emerald-500 shrink-0';
         if (dot) dot.className = 'w-2 h-2 rounded-full bg-emerald-600 animate-pulse';
         if (text) text.textContent = '✓ API Aktif';
         if (modalInfo) {
@@ -615,7 +611,7 @@
             : '✅ Tersambung otomatis ke Server Gemini API (Railway).';
         }
       } else {
-        if (badge) badge.className = 'mt-1 inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full text-[11px] font-extrabold bg-rose-100 text-rose-900 border border-rose-400';
+        if (badge) badge.className = 'inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full text-[11px] font-extrabold bg-rose-100 text-rose-900 border border-rose-400 shrink-0';
         if (dot) dot.className = 'w-2 h-2 rounded-full bg-rose-500';
         if (text) text.textContent = 'Atur API';
         if (modalInfo) {
@@ -752,9 +748,6 @@
       showToast(`Contoh "${p.name}" siap dibuatkan naskahnya!`);
     }
 
-    // ==========================================
-    // GENERATE DRAMA SCRIPT & AI PROMPTS
-    // ==========================================
     async function generateDramaScript() {
       const productName = document.getElementById('productName').value.trim() || 'Produk UMKM Lokal';
       const category = document.getElementById('category').value;
@@ -964,9 +957,6 @@ Struktur JSON wajib:
       URL.revokeObjectURL(url);
     }
 
-    // ==========================================
-    // LIGHTWEIGHT MOBILE VIDEO MERGER
-    // ==========================================
     let uploadedClips = [];
     let logoImageObj = null;
     let productImageObj = null;
@@ -1221,7 +1211,6 @@ Struktur JSON wajib:
         logoSpinAngle = eased * Math.PI * 2;
       }
 
-      // 1. NAMA PRODUK & LOGO
       if (brandText || logoImageObj) {
         ctx.save();
         const fontSize = Math.round(10.5 * scaleFactor);
@@ -1271,7 +1260,6 @@ Struktur JSON wajib:
         ctx.restore();
       }
 
-      // 2. HARGA / PROMO
       let priceBottomY = margin;
       if (promoText) {
         ctx.save();
@@ -1304,7 +1292,6 @@ Struktur JSON wajib:
         ctx.restore();
       }
 
-      // 3. GAMBAR PRODUK
       if (productImageObj) {
         ctx.save();
         const prodFloatY = Math.cos(elapsedSec * 2.0) * (3.5 * scaleFactor);
@@ -1329,7 +1316,6 @@ Struktur JSON wajib:
         ctx.restore();
       }
 
-      // 4. NOMOR TELEPON / WA
       const phoneBarHeight = ctaText ? Math.round(28 * scaleFactor) : 0;
       if (ctaText) {
         ctx.save();
@@ -1367,7 +1353,6 @@ Struktur JSON wajib:
         ctx.restore();
       }
 
-      // 5. TEKS DIALOG PRODUK
       if (subtitleText) {
         ctx.save();
         const dialogFontSize = Math.round(10.5 * scaleFactor);
@@ -1477,11 +1462,9 @@ Struktur JSON wajib:
       const ctx = canvas.getContext('2d', { alpha: false });
       const frameIntervalMs = 1000 / cfg.fps;
 
-      // Gambar frame pembuka langsung agar stream kanvas langsung terisi piksel
       ctx.fillStyle = '#1e293b';
       ctx.fillRect(0, 0, cfg.w, cfg.h);
 
-      // Siapkan 1 elemen video terpasang di DOM agar Android WebView / APK merender frame dengan lancar
       const stageVid = document.createElement('video');
       stageVid.setAttribute('playsinline', '');
       stageVid.setAttribute('webkit-playsinline', '');
@@ -1541,7 +1524,6 @@ Struktur JSON wajib:
         const videoTracks = videoStream.getVideoTracks();
         const audioTracks = audioDest ? audioDest.stream.getAudioTracks() : [];
 
-        // Siapkan stream gabungan, dengan fallback otomatis ke video-only jika HP menolak kombinasi audio
         let combinedStream = new MediaStream([...videoTracks, ...audioTracks]);
         try {
           activeMediaRecorder = formatInfo.mimeType
@@ -1570,7 +1552,6 @@ Struktur JSON wajib:
         try {
           activeMediaRecorder.start(250);
         } catch (_) {
-          // Fallback terakhir: rekam video kanvas saja tanpa timeslice
           combinedStream = new MediaStream([...videoTracks]);
           activeMediaRecorder = new MediaRecorder(combinedStream);
           activeMediaRecorder.ondataavailable = (e) => {
@@ -1758,7 +1739,6 @@ Struktur JSON wajib:
             boxHasil.classList.remove('hidden');
             boxHasil.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-            // Unggah sementara ke server agar APK Android / WebView bisa mengunduh lewat URL HTTP asli
             try {
               const base64Video = await blobToBase64(lastMergedBlob);
               const saveRes = await fetch('/api/save-video', {
